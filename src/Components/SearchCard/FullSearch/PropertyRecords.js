@@ -6,7 +6,7 @@ import Icon from '../../../Ui/Icon'
 import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
 
-const PropertyRecords = ({ propertyRecords }) => {
+const PropertyRecords = ({ propertyRecords, openLock }) => {
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const toggleCard = () => {
@@ -19,7 +19,7 @@ const PropertyRecords = ({ propertyRecords }) => {
             setShowContent(false);
             const timer = setTimeout(() => {
                 setShowContent(true);
-            }, 3000);
+            }, 500);
             return () => clearTimeout(timer);
         }
     }, [showHiddenCard]);
@@ -59,8 +59,13 @@ const PropertyRecords = ({ propertyRecords }) => {
         <View>
             <View style={styles.hide_view}>
                 <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Property Records</Text>
-                    <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Property Records: ({propertyRecords?.length})</Text>
+                    {
+                        openLock === true ?
+                            <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                            :
+                            <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                    }
                 </View>
                 <TouchableOpacity onPress={toggleCard}>
                     {showHiddenCard === false ?

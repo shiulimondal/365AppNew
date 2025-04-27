@@ -6,7 +6,7 @@ import Icon from '../../../Ui/Icon'
 import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
 
-const Relatives = ({ associatesRecords }) => {
+const Relatives = ({associatesRecords ,openLock }) => {
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const toggleCard = () => {
@@ -16,10 +16,10 @@ const Relatives = ({ associatesRecords }) => {
 
     useEffect(() => {
         if (showHiddenCard) {
-            setShowContent(false);
+            setShowContent(false);associatesRecords
             const timer = setTimeout(() => {
                 setShowContent(true);
-            }, 3000);
+            },500);
             return () => clearTimeout(timer);
         }
     }, [showHiddenCard]);
@@ -60,8 +60,13 @@ const Relatives = ({ associatesRecords }) => {
         <View>
             <View style={styles.hide_view}>
                 <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Relatives & Associates</Text>
-                    <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                             <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Relatives & Associates: ({associatesRecords?.length})</Text>
+                   {
+                        openLock === true ?
+                        <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        :
+                        <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                    }
                 </View>
                 <TouchableOpacity onPress={toggleCard}>
                     {showHiddenCard === false ?

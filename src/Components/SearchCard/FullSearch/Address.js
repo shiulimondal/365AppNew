@@ -5,7 +5,8 @@ import { FONTS } from '../../../Constants/Fonts'
 import Icon from '../../../Ui/Icon'
 import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
-const Address = ({ addressData }) => {
+
+const Address = ({ addressData,openLock }) => {
 
     const { colors } = useTheme();
     const [showContent, setShowContent] = useState(false);
@@ -18,7 +19,7 @@ const Address = ({ addressData }) => {
             setShowContent(false);
             const timer = setTimeout(() => {
                 setShowContent(true);
-            }, 3000);
+            }, 500);
             return () => clearTimeout(timer);
         }
     }, [showHiddenCard]);
@@ -61,8 +62,13 @@ const Address = ({ addressData }) => {
         <View>
             <View style={styles.hide_view}>
                 <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Addresss</Text>
-                    <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                     <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Addresses: ({addressData?.length})</Text>
+                    {
+                        openLock === true ?
+                        <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        :
+                        <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                    }
                 </View>
                 <TouchableOpacity onPress={toggleCard}>
                     {showHiddenCard === false ?

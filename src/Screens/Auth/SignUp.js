@@ -22,6 +22,7 @@ import AuthService from '../../Services/Auth';
 import Toast from "react-native-simple-toast";
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/reducer/User';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -59,9 +60,6 @@ const SignUp = () => {
     const [buttonLoader, setbuttonLoader] = useState(false);
     const [formErrors, setFormErrors] = useState({});
 
-    console.log('====================================', email);
-    console.log();
-    console.log('====================================');
 
 
     const validateEmail = (email) => {
@@ -118,6 +116,45 @@ const SignUp = () => {
         return Object.keys(errors).length === 0;  // ✅ return true if no error
     };
 
+    // const handleSubmit = async () => {
+    //     if (!validate()) {
+    //         return;
+    //     }
+    //     const payload = {
+    //         fullName: name,
+    //         email: email,
+    //         password: password,
+    //         accountType: selectAccount,
+    //         businessName: businessName,
+    //         position: position,
+    //         industry: selectIndustry,
+    //     };
+    //     console.log('Sending register payload to:', payload);
+    //     try {
+    //         setbuttonLoader(true)
+    //         const res = await AuthService.setRegister(payload);
+    //         console.log('✅ Register API response:', res);
+    //         const normalizedUserData = {
+    //             id: res.data?.id,
+    //             fullName: res.data?.fullName,
+    //             email: res.data?.email,
+    //             accountType: res.data?.accountType,
+    //             createdAt: res.data?.createdAt,
+    //         };
+    //         const userData =await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
+    //         if (userData) {
+    //             dispatch(setUser(JSON.parse(userData)));  
+    //         }
+    //         NavigationService.navigate('Login');
+    //         Toast.show(res?.message);
+    //     } catch (error) {
+    //         console.error("Full Reg error:", error);
+    //         Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
+    //     } finally {
+    //         setbuttonLoader(false);
+    //     }
+    // };
+   
     const handleSubmit = async () => {
         if (!validate()) {
             return;
@@ -132,10 +169,12 @@ const SignUp = () => {
             industry: selectIndustry,
         };
         console.log('Sending register payload to:', payload);
+    
         try {
-            setbuttonLoader(true)
+            setbuttonLoader(true);
             const res = await AuthService.setRegister(payload);
             console.log('✅ Register API response:', res);
+    
             const normalizedUserData = {
                 id: res.data?.id,
                 fullName: res.data?.fullName,
@@ -143,17 +182,30 @@ const SignUp = () => {
                 accountType: res.data?.accountType,
                 createdAt: res.data?.createdAt,
             };
-            dispatch(setUser(normalizedUserData));
+    
+            // Save user data
+            await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
+            await AsyncStorage.setItem('token', ''); 
+    
+            // Dispatch properly
+            dispatch(setUser({
+                token: '',
+                userData: normalizedUserData,
+                login_status: true,
+                guest_status: false,
+            }));
+    
             NavigationService.navigate('Login');
             Toast.show(res?.message);
         } catch (error) {
             console.error("Full Reg error:", error);
-            Toast.show("Oops! Something went wrong. Please try again.");
+            Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
         } finally {
             setbuttonLoader(false);
         }
     };
-
+    
+    
 
     return (
         <View style={{ ...styles.Container, }}>

@@ -82,6 +82,8 @@ const SearchProfile = () => {
     const [evictionRecords, setEvictionRecords] = useState({})
     const [domainRecords, setDomainRecords] = useState({})
     const [associatesRecords, setAssociatesRecords] = useState({})
+    const [showButton, setShowButton] = useState(true)
+    const [openLock, setOpenLock] = useState(false)
 
     useEffect(() => {
         if (token && transactionId) {
@@ -104,6 +106,8 @@ const SearchProfile = () => {
         try {
             setIsLoading(true);
             const res = await HomeService.setFullUpdateData(payload, token);
+            setShowButton(false)
+            setOpenLock(true)
             const persons = res?.data?.persons ?? [];
             setUserData(persons);
             setphoneNumber(persons[0]?.phoneNumbers)
@@ -185,20 +189,58 @@ const SearchProfile = () => {
                                     marginTop: moderateScale(-50),
                                 },
                             ]}>
+                           
+
                             <View style={styles.card_view}>
-                                <PhoneNumber phoneNumber={phoneNumber} />
-                                <EmailAddress emailData={emailData} />
-                                <Address addressData={addressData} />
-                                <CreminalRecords criminalRecords={criminalRecords} />
-                                <BusinessRecords businessRecords={businessRecords} />
-                                <WorkplaceRecords workplaceRecords={workplaceRecords} />
-                                <ForeclosureRecords foreclosureRecords={foreclosureRecords} />
-                                <DebtRecords debtRecords={debtRecords} />
-                                <PropertyRecords propertyRecords={propertyRecords} />
-                                <EvictionRecords evictionRecords={evictionRecords} />
-                                <DomainRecords domainRecords={domainRecords} />
-                                <Relatives associatesRecords={associatesRecords} />
+                                {phoneNumber !== undefined && (
+                                    <PhoneNumber openLock={openLock} phoneNumber={phoneNumber} />
+                                )}
+
+                                {emailData !== undefined && (
+                                    <EmailAddress openLock={openLock} emailData={emailData} />
+                                )}
+
+                                {addressData !== undefined && (
+                                    <Address openLock={openLock} addressData={addressData} />
+                                )}
+
+                                {criminalRecords !== undefined && (
+                                    <CreminalRecords openLock={openLock} criminalRecords={criminalRecords} />
+                                )}
+
+                                {businessRecords !== undefined && (
+                                    <BusinessRecords openLock={openLock} businessRecords={businessRecords} />
+                                )}
+
+                                {workplaceRecords !== undefined && (
+                                    <WorkplaceRecords openLock={openLock} workplaceRecords={workplaceRecords} />
+                                )}
+
+                                {foreclosureRecords !== undefined && (
+                                    <ForeclosureRecords openLock={openLock} foreclosureRecords={foreclosureRecords} />
+                                )}
+
+                                {debtRecords !== undefined && (
+                                    <DebtRecords openLock={openLock} debtRecords={debtRecords} />
+                                )}
+
+                                {propertyRecords !== undefined && (
+                                    <PropertyRecords openLock={openLock} propertyRecords={propertyRecords} />
+                                )}
+
+                                {evictionRecords !== undefined && (
+                                    <EvictionRecords openLock={openLock} evictionRecords={evictionRecords} />
+                                )}
+
+                                {domainRecords !== undefined && (
+                                    <DomainRecords openLock={openLock} domainRecords={domainRecords} />
+                                )}
+
+                                {associatesRecords !== undefined && (
+                                    <Relatives openLock={openLock} associatesRecords={associatesRecords} />
+                                )}
                             </View>
+
 
                         </Animated.View>
                     </ScrollView>
@@ -227,11 +269,13 @@ const SearchProfile = () => {
                             </ScrollView>
                         </View>
                     </Modal>
+                    {showButton && (
+                        <TouchableOpacity onPress={() => setPlanModal(true)}
+                            style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}    >
+                            <Text style={{ ...styles.button_txt, color: colors.secondaryThemeColor }}>Unlock Full Details</Text>
+                        </TouchableOpacity>
+                    )}
 
-                    <TouchableOpacity onPress={() => setPlanModal(true)}
-                        style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}    >
-                        <Text style={{ ...styles.button_txt, color: colors.secondaryThemeColor }}>Unlock Full Details</Text>
-                    </TouchableOpacity>
 
                     <CustomTab />
                 </>

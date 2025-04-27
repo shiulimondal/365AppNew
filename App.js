@@ -11,18 +11,28 @@ import AuthStack from './src/Navigations/AuthStack';
 import UserStack from './src/Navigations/UserStack';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { setGuest } from './src/Redux/reducer/User';
+import { setGuest, setUser } from './src/Redux/reducer/User';
+import { loadUserFromStorage } from './src/Services/authStorage';
 
 const Stack = createStackNavigator();
 
 const App = () => {
     const dispatch = useDispatch();
     const { login_status, guest_status } = useSelector((state) => state.User || {});
+
     console.log('=========app.js=========guest_status==================', guest_status);
     console.log('==========app.js==========login_status================', login_status);
 
     useEffect(() => {
+        console.log('Checking user status on app launch...');
+        loadUserFromStorage(dispatch);
+    }, [dispatch]);
+
+    useEffect(() => {
+        console.log('login_status:', login_status);
+        console.log('guest_status:', guest_status);
         if (!login_status && !guest_status) {
+            console.log('Dispatching setGuest');
             dispatch(setGuest());
         }
     }, [login_status, guest_status, dispatch]);
@@ -52,10 +62,8 @@ const ThemeContent = ({ login_status, guest_status }) => {
             <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                     {login_status || guest_status ? (
-                        // If the user is logged in or a guest
                         <Stack.Screen name="UserStack" component={UserStack} />
                     ) : (
-                        // If the user is neither logged in nor a guest
                         <Stack.Screen name="AuthStack" component={AuthStack} />
                     )}
                 </Stack.Navigator>

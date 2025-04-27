@@ -8,8 +8,11 @@ import LoadingSpinner from '../../../Ui/LoadingSpinner';
 
 
 const { width, height } = Dimensions.get('screen');
-const PhoneNumber = ({ phoneNumber }) => {
+const PhoneNumber = ({ phoneNumber, openLock}) => {
     // const normalPhoneNumbers = Array.isArray(phoneNumber) ? phoneNumber : [phoneNumber];
+    console.log('================================phoneNumber===========',phoneNumber);
+    
+
     const { colors } = useTheme();
     const [showContent, setShowContent] = useState(false);
     const [showHiddenCard, setShowHiddenCard] = useState(false);
@@ -21,7 +24,7 @@ const PhoneNumber = ({ phoneNumber }) => {
             setShowContent(false);
             const timer = setTimeout(() => {
                 setShowContent(true);
-            }, 3000);
+            }, 500);
             return () => clearTimeout(timer);
         }
     }, [showHiddenCard]);
@@ -62,8 +65,15 @@ const PhoneNumber = ({ phoneNumber }) => {
         <View>
             <View style={styles.hide_view}>
                 <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Phone Number</Text>
-                    <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Phone Number: ({phoneNumber?.length})</Text>
+                    {
+                        openLock === true ?
+                        <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        :
+                        <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+
+                    }
+                 
                 </View>
                 <TouchableOpacity onPress={toggleCard}>
                     {showHiddenCard === false ?

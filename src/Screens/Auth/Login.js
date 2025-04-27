@@ -20,6 +20,7 @@ import Toast from "react-native-simple-toast";
 import AuthService from '../../Services/Auth';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setUser } from '../../Redux/reducer/User';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -68,6 +69,44 @@ const Login = () => {
         return Object.keys(errors).length === 0;
     };
 
+    // const handleSubmit = async () => {
+    //     if (!validate()) {
+    //         return;
+    //     }
+    //     const payload = {
+    //         email: email,
+    //         password: password,
+    //     };
+    //     console.log('Sending log payload to:', payload);
+    //     try {
+    //         setbuttonLoader(true);
+    //         const res = await AuthService.setLogin(payload);
+    //         console.log('✅ Log API response:---------------------------', res);
+    //         const normalizedUserData = {
+    //             id: res.data?.user_data?.id,
+    //             fullName: res.data?.user_data?.fullName,
+    //             email: res.data?.user_data?.email,
+    //             phNumber: res.data?.user_data?.phNumber,
+    //             address: res.data?.user_data?.address,
+    //             imageUrl: res.data?.user_data?.imageUrl,
+    //             token: res.data?.token,
+    //         };
+    //         await AsyncStorage.setItem('token', res.data?.token);
+    //        const userData =await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
+    //         if (userData) {
+    //             dispatch(setUser(JSON.parse(userData)));  
+    //         }
+    //         AuthService.setAccount(res.data);
+    //         NavigationService.navigate('BottomTab')
+    //         Toast.show(res?.message);
+    //     } catch (error) {
+    //         console.error("Full Log error:", error);
+    //         Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
+    //     } finally {
+    //         setbuttonLoader(false);
+    //     }
+    // };
+
     const handleSubmit = async () => {
         if (!validate()) {
             return;
@@ -77,10 +116,12 @@ const Login = () => {
             password: password,
         };
         console.log('Sending log payload to:', payload);
+    
         try {
             setbuttonLoader(true);
             const res = await AuthService.setLogin(payload);
-            console.log('✅ Log API response:', res);
+            console.log('✅ Log API response:---------------------------', res);
+    
             const normalizedUserData = {
                 id: res.data?.user_data?.id,
                 fullName: res.data?.user_data?.fullName,
@@ -88,20 +129,35 @@ const Login = () => {
                 phNumber: res.data?.user_data?.phNumber,
                 address: res.data?.user_data?.address,
                 imageUrl: res.data?.user_data?.imageUrl,
-                token: res.data?.token,
             };
-            await AsyncStorage.setItem('token', res.data?.token);
+    
+            const token = res.data?.token;
+    
+            // Save token separately
+            await AsyncStorage.setItem('token', token);
+            // Save userData
+            await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
+    
+            // Dispatch properly
+            dispatch(setUser({
+                token,
+                userData: normalizedUserData,
+                login_status: true,
+                guest_status: false,
+            }));
+    
             AuthService.setAccount(res.data);
-            dispatch(setUser(normalizedUserData));
+            NavigationService.navigate('BottomTab');
             Toast.show(res?.message);
         } catch (error) {
             console.error("Full Log error:", error);
-            Toast.show("Oops! Something went wrong. Please try again.");
+            Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
         } finally {
             setbuttonLoader(false);
         }
     };
-
+    
+    
     return (
         <View style={{ ...styles.Container, }}>
             <ScrollView showsVerticalScrollIndicator={false}

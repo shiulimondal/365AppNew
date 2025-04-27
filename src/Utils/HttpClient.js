@@ -30,6 +30,8 @@ async function Delete(endpoint, params) {
 }
 async function request(endpoint, params = null, method = 'GET', customHeaders = {}) {
     const token = await AsyncStorage.getItem('token');
+    console.log('token------------------------------token',token);
+    
     const url = BASE_URL + endpoint;
     console.log('URL:--------------------------00000------------------------', url);
     const PAY_url = PAY_URL + endpoint;

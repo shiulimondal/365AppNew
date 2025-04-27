@@ -141,6 +141,10 @@ const Search = () => {
                                 value={searchAllData.text}
                                 onChangeText={(text) => setSearchAllData({ text, type: selectedTab })}
                             />
+                              {formErrors?.searchAllData?.text && (
+                                                            <Text style={styles.error_message}>{formErrors?.searchAllData?.text}</Text>
+                                                        )}
+
                             <TouchableOpacity onPress={() => handleSearch(searchAllData, 1)}>
                                 <Icon name={'search'} type={'Feather'} size={22} color={colors.primaryThemeColor} />
                             </TouchableOpacity>
@@ -167,6 +171,7 @@ const Search = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [listMessage, setListMessage] = useState('');
     const [selectedAddress, setSelectedAddress] = useState('');
+     const [formErrors, setFormErrors] = useState({});
 
     const handlePlaceSelect = (data, details = null) => {
         // console.log('gettadddddddddddddddddddddddddd---------------', data);
@@ -183,45 +188,42 @@ const Search = () => {
         });
     };
 
-    const isEmail = (input) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,10}$/.test(input);
-    const isName = (input) => /^[a-zA-Z ]*$/.test(input) && input.trim().length > 2;
-    const isPhone = (input) => /^\(?([0-9]{3})\)?[- ]?([0-9]{3})[- ]?([0-9]{4})$/.test(input);
-    const isAddress = (input) => {
-        const addressRegex =
-            /^\d{1,5}\s[A-Za-z\s]+(?:\s[A-Za-z]+)?\s?(?:(?:St|St\.|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Ln|Lane|Dr|Drive|Hwy|Highway)\.)?|^\d+\s[A-Za-z\s]+\s[A-Za-z0-9\s]+$/;
-        if (addressRegex.test(input) && input.trim().split(" ").length > 2) {
-            return true;
-        }
-        return false;
+    // const isEmail = (input) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,10}$/.test(input);
+    // const isName = (input) => /^[a-zA-Z ]*$/.test(input) && input.trim().length > 2;
+    // const isPhone = (input) => /^\(?([0-9]{3})\)?[- ]?([0-9]{3})[- ]?([0-9]{4})$/.test(input);
+    // const isAddress = (input) => {
+    //     const addressRegex =
+    //         /^\d{1,5}\s[A-Za-z\s]+(?:\s[A-Za-z]+)?\s?(?:(?:St|St\.|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Ln|Lane|Dr|Drive|Hwy|Highway)\.)?|^\d+\s[A-Za-z\s]+\s[A-Za-z0-9\s]+$/;
+    //     if (addressRegex.test(input) && input.trim().split(" ").length > 2) {
+    //         return true;
+    //     }
+    //     return false;
+    // };
+
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|us|org|edu|gov)$/i;
+        return emailRegex.test(email);
     };
-
-
+    
+    const validatePhone = (phone) => {
+        const phoneRegex = /^(\+1\s?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/;
+        return phoneRegex.test(phone);
+    };
+    
+    
+    const validateName = (firstName, lastName) => {
+        const nameRegex = /^[A-Za-z]+$/;  // Only alphabets
+        if (!firstName || !lastName) return false;
+        return nameRegex.test(firstName) && nameRegex.test(lastName);
+    };
+    
+    const validateAddress = (address) => {
+        return address?.main_text && address?.secondary_text;
+    };
+    
     const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
         const { text, type } = searchAllData;
-        // Validation checks
-        if (!text && !reusePrevious) {
-            // Toast.show("Please enter a valid search term.");
-            return;
-        }
-        let isValid = true;
-        // Check the input based on the type
-        if (type === "Name" && !isName(text)) {
-            isValid = false;
-            Toast.show("Please enter a valid name with more than 2 characters.");
-        } else if (type === "Phone" && !isPhone(text)) {
-            isValid = false;
-            Toast.show("Please enter a valid phone number.");
-        } else if (type === "Email" && !isEmail(text)) {
-            isValid = false;
-            Toast.show("Please enter a valid email address.");
-        } else if (type === "Address" && !isAddress(text)) {
-            isValid = false;
-            Toast.show("Please enter a valid address.");
-        }
-
-        if (!isValid) {
-            return;
-        }
+    
         setCurrentPage(page);
         let payload = {
             firstName: null,
@@ -231,30 +233,55 @@ const Search = () => {
             email: null,
             Addresses: null,
         };
-
+    
+        let errorMessage = null;
+    
         if (type === "Name") {
             const { firstName, middleName, lastName } = splitFullName(text);
-            payload.firstName = firstName;
-            payload.middleName = middleName;
-            payload.lastName = lastName;
+    
+            if (!validateName(firstName, lastName)) {
+                errorMessage = "Please enter a decent name correctly (e.g., 'Jhon Doe')";
+            } else if (!firstName || !lastName) {
+                errorMessage = "Please provide both first and last name separately.";
+            } else {
+                payload.firstName = firstName;
+                payload.middleName = middleName;
+                payload.lastName = lastName;
+            }
         } else if (type === "Phone") {
-            payload.phone = text;
+            if (!validatePhone(text)) {
+                errorMessage = "Please enter a valid US phone number (e.g., 123-456-7890 or (123) 456-7890)";
+            } else {
+                payload.phone = text;
+            }
         } else if (type === "Email") {
-            payload.email = text;
+            if (!validateEmail(text)) {
+                errorMessage = "Please enter a valid email ID";
+            } else {
+                payload.email = text;
+            }
         } else if (type === "Address") {
-            payload.Addresses = [{
-                AddressLine1: selectedAddress?.main_text || null,
-                AddressLine2: selectedAddress?.secondary_text || null
-            }];
+            if (!validateAddress(selectedAddress)) {
+                errorMessage = "Please select a valid address.";
+            } else {
+                payload.Addresses = [{
+                    AddressLine1: selectedAddress.main_text || null,
+                    AddressLine2: selectedAddress.secondary_text || null,
+                }];
+            }
         }
-
+    
+        if (errorMessage) {
+            Toast.show(errorMessage);
+            return;
+        }
+    
         try {
             setLoading(true);
             const res = await HomeService.setsearchData(payload, page);
-            // console.log('---------res------------------>>>>>>>>>>>>>>>>>>>>>>>>', res);
             const persons = res?.data?.persons ?? [];
             setSearchResult(persons);
-            setListMessage(res?.data?.summary)
+            setListMessage(res?.data?.summary);
             setDataCache(prev => ({
                 ...prev,
                 [type]: {
@@ -262,15 +289,71 @@ const Search = () => {
                     [page]: persons,
                 }
             }));
-
+    
             setTotalPages(res?.data?.pagination?.totalPages || 1);
         } catch (error) {
             console.error("Search error:", error);
-            Toast.show("Oops! Something went wrong. Please try again.");
+            // Toast.show("Oops! Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }
     };
+    
+
+
+    // const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
+    //     const { text, type } = searchAllData;
+    //     // Validation checks
+       
+    //     setCurrentPage(page);
+    //     let payload = {
+    //         firstName: null,
+    //         middleName: null,
+    //         lastName: null,
+    //         phone: null,
+    //         email: null,
+    //         Addresses: null,
+    //     };
+
+    //     if (type === "Name") {
+    //         const { firstName, middleName, lastName } = splitFullName(text);
+    //         payload.firstName = firstName;
+    //         payload.middleName = middleName;
+    //         payload.lastName = lastName;
+    //     } else if (type === "Phone") {
+    //         payload.phone = text;
+    //     } else if (type === "Email") {
+    //         payload.email = text;
+    //     } else if (type === "Address") {
+    //         payload.Addresses = [{
+    //             AddressLine1: selectedAddress?.main_text || null,
+    //             AddressLine2: selectedAddress?.secondary_text || null
+    //         }];
+    //     }
+
+    //     try {
+    //         setLoading(true);
+    //         const res = await HomeService.setsearchData(payload, page);
+    //         // console.log('---------res------------------>>>>>>>>>>>>>>>>>>>>>>>>', res);
+    //         const persons = res?.data?.persons ?? [];
+    //         setSearchResult(persons);
+    //         setListMessage(res?.data?.summary)
+    //         setDataCache(prev => ({
+    //             ...prev,
+    //             [type]: {
+    //                 ...(prev[type] || {}),
+    //                 [page]: persons,
+    //             }
+    //         }));
+
+    //         setTotalPages(res?.data?.pagination?.totalPages || 1);
+    //     } catch (error) {
+    //         console.error("Search error:", error);
+    //         Toast.show("Oops! Something went wrong. Please try again.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const renderPagination = () => {
         if (totalPages <= 1) return null;

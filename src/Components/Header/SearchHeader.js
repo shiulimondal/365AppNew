@@ -100,7 +100,7 @@ const SearchHeader = ({ userdata }) => {
                             Death Records
                         </Text>
                         <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
-                            {userdata[0]?.deathRecords?.isDeceased ?? userdata[0]?.deathRecord ?? "N/A"}
+                            {userdata[0]?.deathRecords?.isDeceased ?? userdata[0]?.deathRecord ?? "No"}
                         </Text>
                     </View>
                 </View>

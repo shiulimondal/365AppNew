@@ -32,6 +32,8 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
     const [discountedAmount, setDiscountedAmount] = useState(null);
     // const [paymentLoading, setPaymentLoading] = useState(false);
 
+    
+
     const handleCouponApply = async () => {
         try {
             setCoupon(prev => ({ ...prev, loading: true, error: '' }));
@@ -45,7 +47,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             });
 
             const data = await response.json();
-
             if (data?.success) {
                 const { discount, expiryDate, type } = data.data;
                 const now = new Date();
