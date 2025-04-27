@@ -1,29 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setUser, setGuest } from '../Redux/reducer/User';
 
-// Function to load user data from AsyncStorage
 export const loadUserFromStorage = async (dispatch) => {
-    try {
-        const userData = await AsyncStorage.getItem('userData');
-        const token = await AsyncStorage.getItem('token');
+  try {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = await AsyncStorage.getItem('token');
 
-        if (userData && token) {
-            const parsedUserData = JSON.parse(userData);
-            // Dispatch the action to set the user data in Redux
-            dispatch(setUser({
-                token: token,
-                userData: parsedUserData,
-                login_status: true,
-                guest_status: false,
-            }));
-        } else {
-            // If no user data is found, dispatch setGuest action
-            dispatch(setGuest());
-        }
-    } catch (error) {
-        console.error('Error loading user data from storage:', error);
-        // Dispatch setGuest if there's an error loading user data
-        dispatch(setGuest());
+    if (userData && token) {
+      // If there's stored user data and token, treat as logged in
+      const parsedUserData = JSON.parse(userData);
+      dispatch(setUser({
+        token,
+        userData: parsedUserData,
+        login_status: true,
+        guest_status: false,
+      }));
+    } else {
+      // No user data means it's a guest user
+      dispatch(setGuest());
     }
+  } catch (error) {
+    console.error('Error loading user from AsyncStorage:', error);
+    dispatch(setGuest()); // Default to guest if error occurs
+  }
 };
-

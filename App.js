@@ -62,8 +62,10 @@ const ThemeContent = ({ login_status, guest_status }) => {
             <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                     {login_status || guest_status ? (
+                        // Guest or logged-in user, so show the UserStack
                         <Stack.Screen name="UserStack" component={UserStack} />
                     ) : (
+                        // If neither guest nor logged in, show AuthStack (login/signup)
                         <Stack.Screen name="AuthStack" component={AuthStack} />
                     )}
                 </Stack.Navigator>
@@ -71,5 +73,6 @@ const ThemeContent = ({ login_status, guest_status }) => {
         </NavigationContainer>
     );
 };
+;
 
 export default App;

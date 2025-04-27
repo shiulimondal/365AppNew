@@ -35,17 +35,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import SearchLoader from '../../Ui/SearchLoader ';
 
 const { width, height } = Dimensions.get('screen');
+
 const SearchProfile = () => {
     const dispatch = useDispatch()
     const { colors } = useTheme();
     const route = useRoute();
     const getUserId = route?.params?.userId
-    // console.log('=================reali  fulll user data    dddddddddddiiiii======', getUserId);
+    console.log('=================reali  fulll user data    dddddddddddiiiii======', getUserId);
     const token = useSelector(state => state.Payment.token);
     const transactionId = useSelector(state => state.Payment.transactionId);
     const selectedUserId = useSelector(state => state.UserId.selectedUserId);
-    // console.log('login_status---------------<<<<<setPaymentData------------------', token, transactionId);
-    // console.log('userdata with iddddddddddddddddddddddddddd---------------<------------------', selectedUserId);
+    console.log('login_status---------------<<<<<setPaymentData------------------', token, transactionId);
+    console.log('userdata with iddddddddddddddddddddddddddd---------------<------------------', selectedUserId);
     const [isplanModal, setPlanModal] = useState(false);
     const [ispaymentModal, setPaymentModal] = useState(false);
     const [price, setPrice] = useState('');

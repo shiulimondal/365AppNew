@@ -275,9 +275,9 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                                         formatted += '/';
                                     }
                                     setExpiry(formatted);
-                                    if (formatted.length === 7) {
-                                        cvvRef.current?.focus();
-                                    }
+                                    // if (formatted.length === 7) {
+                                    //     cvvRef.current?.focus();
+                                    // }
                                 }}
                                 placeholder="MM/YYYY"
                                 keyboardType="numeric"

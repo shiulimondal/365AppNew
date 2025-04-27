@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Pressable, StatusBar, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions, Image, StatusBar, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import Icon from '../../Ui/Icon';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -7,15 +7,16 @@ import { FONTS } from '../../Constants/Fonts';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
-
 const { width, height } = Dimensions.get('window');
 
 const SearchHeader = ({ userdata }) => {
     const { login_status, guest_status } = useSelector(state => state.User);
     const navigation = useNavigation();
     const { colors } = useTheme();
+    // console.log('-------------------user headerrrr--------', userdata);
+
     const renderBlurredText = (text) => {
-        if (typeof text !== "string") {
+        if (!text || typeof text !== "string") {
             return <Text style={styles.cardText}>{text || ""}</Text>;
         }
 
@@ -41,6 +42,7 @@ const SearchHeader = ({ userdata }) => {
         ));
     };
 
+
     return (
         <View style={styles.Container}>
             <StatusBar backgroundColor={'rgba(10, 104, 201, 1)'} barStyle="light-content" translucent />
@@ -57,7 +59,7 @@ const SearchHeader = ({ userdata }) => {
                 />
                 <View style={styles.user_view}>
                     <Text
-                        style={[styles.username_txt, { color: colors.subFontcolor }]}>
+                        style={[styles.username_txt, { color: colors.subFontcolor }]} >
                         Hello User
                     </Text>
                     <TouchableOpacity
@@ -68,52 +70,61 @@ const SearchHeader = ({ userdata }) => {
                                 null
                             }
                         }}
-                        style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }}>
+                        style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }} >
                         <Icon name={"user"} type={"FontAwesome"} size={26} />
                     </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.heading_view}>
-                <View >
-                    <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>
-                        {userdata[0]?.name}
-                    </Text>
-                    <Text style={[styles.subheadingemail_txt, { color: colors.subFontcolor }]}>
-                        {renderBlurredText(userdata[0]?.phoneNumbers[0])}
-                    </Text>
-                    <Text
-                        style={[styles.subheading_txt, { color: colors.subFontcolor, marginTop: 7 }]}>
-                        {renderBlurredText(userdata[0]?.addresses[0]?.fullAddress)}
-                    </Text>
+                <View>
+                    {userdata && userdata[0]?.name && (
+                        <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>
+                            {userdata[0]?.name}
+                        </Text>
+                    )}
+
+                    {userdata && userdata[0]?.phoneNumbers?.[0] && (
+                        <Text style={[styles.subheadingemail_txt, { color: colors.subFontcolor }]}>
+                            {renderBlurredText(userdata[0]?.phoneNumbers[0])}
+                        </Text>
+                    )}
+
+                    {userdata && userdata[0]?.addresses?.[0]?.fullAddress && (
+                        <Text
+                            style={[styles.subheading_txt, { color: colors.subFontcolor, marginTop: 7 }]}>
+                            {renderBlurredText(userdata[0]?.addresses[0]?.fullAddress)}
+                        </Text>
+                    )}
                 </View>
                 <View>
-                    <View>
+                    {userdata && userdata[0]?.age && (
                         <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>
                             {userdata[0]?.age} Years
                         </Text>
+                    )}
+                    {userdata && userdata[0]?.dob && (
                         <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
                             {userdata[0]?.dob}
                         </Text>
-                    </View>
+                    )}
                     <View>
                         <Text style={[styles.death_txt, { color: colors.subFontcolor }]}>
                             Death Records
                         </Text>
+
                         <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
                             {userdata[0]?.deathRecords?.isDeceased ?? userdata[0]?.deathRecord ?? "No"}
                         </Text>
                     </View>
                 </View>
-
-
             </View>
-
         </View>
     );
 };
 
 export default SearchHeader;
-// define your styles
+
+// Define your styles
 const styles = StyleSheet.create({
     Container: {
         flex: 1,
@@ -152,12 +163,6 @@ const styles = StyleSheet.create({
         borderRadius: moderateScale(23),
         marginLeft: moderateScale(10),
     },
-    user_img: {
-        height: moderateScale(40),
-        width: moderateScale(40),
-        borderRadius: moderateScale(22),
-        resizeMode: 'cover',
-    },
     time_txt: {
         fontSize: moderateScale(13),
         fontFamily: FONTS.Inter.light,
@@ -191,6 +196,6 @@ const styles = StyleSheet.create({
     death_txt: {
         fontSize: moderateScale(14),
         fontFamily: FONTS.Inter.semibold,
-        marginTop: moderateScale(5)
+        marginTop: moderateScale(5),
     }
 });
