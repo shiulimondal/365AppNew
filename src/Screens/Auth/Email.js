@@ -43,8 +43,27 @@ const Email = () => {
     const [email, setEmail] = useState('')
     const [buttonLoader, setbuttonLoader] = useState(false);
     const [formErrors, setFormErrors] = useState({});
+    const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|us|org|edu|gov)$/i;
+        return emailRegex.test(email);
+    };
 
+    const validate = () => {
+        const errors = {};
+        if (email.trim() === "") {
+            errors.email = "Email is required";
+        } else if (!validateEmail(email)) {
+            errors.email = "Enter a valid email ID";
+        }
+       
+        setFormErrors(errors);
+
+        return Object.keys(errors).length === 0;
+    };
     const handleSubmit = async () => {
+        if (!validate()) {
+            return;
+        }
         const payload = {
             email: email,
         };
@@ -103,6 +122,9 @@ const Email = () => {
                             value={email}
                             onChangeText={(val) => setEmail(val)}
                         />
+                        {formErrors.email && (
+                            <Text style={styles.error_message}>{formErrors.email}</Text>
+                        )}
 
                         <TouchableOpacity
                             onPress={() => handleSubmit()}
@@ -199,5 +221,9 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(16),
         fontFamily: FONTS.Inter.semibold,
     },
-
+    error_message: {
+        fontSize: moderateScale(10),
+        fontFamily: FONTS.Inter.medium,
+        color: 'red'
+    }
 });

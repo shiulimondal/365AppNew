@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
@@ -7,12 +7,14 @@ import Icon from '../../Ui/Icon';
 import NavigationService from '../../Services/Navigation';
 import { setSelectedUserId, setUserData } from '../../Redux/reducer/SearchId';
 import { useDispatch } from 'react-redux';
+import { clearPaymentData } from '../../Redux/reducer/paymentSlice';
 
-const { width, height } = Dimensions.get('window');
+
 
 const AdvancedSearchData = ({ item, index }) => {
     const { colors } = useTheme();
     const dispatch = useDispatch();
+    const { width, height } = useWindowDimensions();
 
     const renderBlurredText = (text) => {
         if (typeof text !== "string") {
@@ -50,10 +52,13 @@ const AdvancedSearchData = ({ item, index }) => {
 
                 dispatch(setSelectedUserId(item?.personId));  // Store selectedUserId
                 dispatch(setUserData(item));  // Store userData
-
+                dispatch(clearPaymentData());
                 NavigationService.navigate('SearchProfile', { userId: item?.personId });
             }}
-            key={index} style={styles.Container}>
+            key={index} style={{
+                marginTop: moderateScale(15),
+                width: width - moderateScale(30)
+            }}>
             <View style={{ ...styles.card_top, backgroundColor: colors.cardColor, }}>
                 <View>
                     <Text style={{ ...styles.user_name, color: colors.primaryFontColor }}>{item?.name}</Text>
@@ -90,9 +95,6 @@ const AdvancedSearchData = ({ item, index }) => {
 export default AdvancedSearchData;
 // define your styles
 const styles = StyleSheet.create({
-    Container: {
-        marginTop: moderateScale(15)
-    },
     card_top: {
         borderTopRightRadius: moderateScale(15),
         borderTopLeftRadius: moderateScale(15),
@@ -127,7 +129,6 @@ const styles = StyleSheet.create({
     user_address: {
         fontSize: moderateScale(13),
         fontFamily: FONTS.Inter.regular,
-        // maxWidth: '70%',
         marginTop: moderateScale(7)
     }
 });

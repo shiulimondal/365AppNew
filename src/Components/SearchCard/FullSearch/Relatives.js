@@ -6,7 +6,7 @@ import Icon from '../../../Ui/Icon'
 import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
 
-const Relatives = ({associatesRecords ,openLock }) => {
+const Relatives = ({ associatesRecords, openLock }) => {
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const toggleCard = () => {
@@ -16,10 +16,10 @@ const Relatives = ({associatesRecords ,openLock }) => {
 
     useEffect(() => {
         if (showHiddenCard) {
-            setShowContent(false);associatesRecords
+            setShowContent(false); associatesRecords
             const timer = setTimeout(() => {
                 setShowContent(true);
-            },500);
+            }, 100);
             return () => clearTimeout(timer);
         }
     }, [showHiddenCard]);
@@ -58,25 +58,34 @@ const Relatives = ({associatesRecords ,openLock }) => {
 
     return (
         <View>
-            <View style={styles.hide_view}>
-                <View style={styles.lockview}>
-                             <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Relatives & Associates: ({associatesRecords?.length})</Text>
-                   {
-                        openLock === true ?
-                        <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
-                        :
-                        <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
-                    }
-                </View>
-                <TouchableOpacity onPress={toggleCard}>
-                    {showHiddenCard === false ?
-                        <Icon name={"down"} type={"AntDesign"} size={18} />
-                        :
-                        <Icon name={"up"} type={"AntDesign"} size={18} />
-                    }
+            {typeof normalAssociatesRecords === 'string' ? (
+                // Show only this when it's a string
+                <TouchableOpacity onPress={toggleCard} style={styles.hide_view}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Relatives & Associates:</Text>
+                        <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
+                    </View>
                 </TouchableOpacity>
+            ) : (
+                <View style={styles.hide_view}>
+                    <TouchableOpacity onPress={toggleCard} style={styles.lockview}>
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Relatives & Associates: ({associatesRecords?.length})</Text>
+                        {openLock ? (
+                            <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        ) : (
+                            <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                        )}
+                    </TouchableOpacity>
 
-            </View>
+                    <TouchableOpacity onPress={toggleCard}>
+                        {showHiddenCard ? (
+                            <Icon name={"up"} type={"AntDesign"} size={18} />
+                        ) : (
+                            <Icon name={"down"} type={"AntDesign"} size={18} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+            )}
 
             {showHiddenCard && (
                 <View style={styles.full_card}>

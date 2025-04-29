@@ -7,8 +7,8 @@ import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
 
 const ForeclosureRecords = ({ foreclosureRecords, openLock }) => {
-    console.log('----------------------foreclosureRecords--------------',foreclosureRecords);
-    
+    // console.log('----------------------foreclosureRecords--------------',foreclosureRecords);
+
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const [showContent, setShowContent] = useState(false);
@@ -61,24 +61,36 @@ const ForeclosureRecords = ({ foreclosureRecords, openLock }) => {
     };
     return (
         <View>
-            <View style={styles.hide_view}>
-                <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Foreclosure Records: ({foreclosureRecords?.length})</Text>
-                    {
-                        openLock === true ?
-                            <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
-                            :
-                            <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
-                    }
-                </View>
-                <TouchableOpacity onPress={toggleCard}>
-                    {showHiddenCard === false ?
-                        <Icon name={"down"} type={"AntDesign"} size={18} />
-                        :
-                        <Icon name={"up"} type={"AntDesign"} size={18} />
-                    }
+              {typeof normalForeclosureRecords === 'string' ? (
+                // Show only this when it's a string
+                <TouchableOpacity onPress={toggleCard} style={styles.hide_view}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Foreclosure Records:</Text>
+                        <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
+                    </View>
                 </TouchableOpacity>
-            </View>
+            ) : (
+                <View style={styles.hide_view}>
+                    <TouchableOpacity onPress={toggleCard} style={styles.lockview}>
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Foreclosure Records: ({workplaceRecords?.length})</Text>
+                        {openLock ? (
+                            <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        ) : (
+                            <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                        )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={toggleCard}>
+                        {showHiddenCard ? (
+                            <Icon name={"up"} type={"AntDesign"} size={18} />
+                        ) : (
+                            <Icon name={"down"} type={"AntDesign"} size={18} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+            )}
+
+
             {showHiddenCard && (
                 <View style={styles.full_card}>
                     {!showContent ? (

@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     FlatList,
     StatusBar,
+    useWindowDimensions,
 } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -25,6 +26,7 @@ import GooglePlacesAutocomplete from '../../Ui/GooglePlacesAutocomplete';
 const { width, height } = Dimensions.get('window');
 
 const Search = () => {
+    const { width, height } = useWindowDimensions();
     const { colors } = useTheme();
     const [selectedTab, setSelectedTab] = useState('Name');
     const [isSticky, setIsSticky] = useState(false);
@@ -50,10 +52,12 @@ const Search = () => {
         inputRange: [0, 1],
         outputRange: [50, 0],
     });
+
     const opacity = viewOffset.interpolate({
         inputRange: [0, 1],
         outputRange: [0, 1],
     });
+
     const splitFullName = (fullName) => {
         const parts = fullName.trim().split(/\s+/);
         return {
@@ -70,9 +74,10 @@ const Search = () => {
                 backgroundColor: colors.secondaryThemeColor,
                 elevation: selectedTab === "Advanced" ? 0 : 2,
                 zIndex: 999,
-                width: width - 15,
+                width: width - moderateScale(15),
                 position: isSticky ? 'absolute' : 'relative',
-                top: isSticky ? moderateScale(30) : moderateScale(50),
+                top: isSticky ? moderateScale(100) : moderateScale(50),
+                marginTop: moderateScale(-70)
             }}
         >
             <View style={styles.out_tab_view}>
@@ -141,9 +146,9 @@ const Search = () => {
                                 value={searchAllData.text}
                                 onChangeText={(text) => setSearchAllData({ text, type: selectedTab })}
                             />
-                              {formErrors?.searchAllData?.text && (
-                                                            <Text style={styles.error_message}>{formErrors?.searchAllData?.text}</Text>
-                                                        )}
+                            {formErrors?.searchAllData?.text && (
+                                <Text style={styles.error_message}>{formErrors?.searchAllData?.text}</Text>
+                            )}
 
                             <TouchableOpacity onPress={() => handleSearch(searchAllData, 1)}>
                                 <Icon name={'search'} type={'Feather'} size={22} color={colors.primaryThemeColor} />
@@ -159,7 +164,6 @@ const Search = () => {
     useEffect(() => {
         handleSearch({}, 1);
     }, []);
-
     const [dataCache, setDataCache] = useState({})
     const [loading, setLoading] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
@@ -171,7 +175,7 @@ const Search = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [listMessage, setListMessage] = useState('');
     const [selectedAddress, setSelectedAddress] = useState('');
-     const [formErrors, setFormErrors] = useState({});
+    const [formErrors, setFormErrors] = useState({});
 
     const handlePlaceSelect = (data, details = null) => {
         // console.log('gettadddddddddddddddddddddddddd---------------', data);
@@ -188,42 +192,32 @@ const Search = () => {
         });
     };
 
-    // const isEmail = (input) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,10}$/.test(input);
-    // const isName = (input) => /^[a-zA-Z ]*$/.test(input) && input.trim().length > 2;
-    // const isPhone = (input) => /^\(?([0-9]{3})\)?[- ]?([0-9]{3})[- ]?([0-9]{4})$/.test(input);
-    // const isAddress = (input) => {
-    //     const addressRegex =
-    //         /^\d{1,5}\s[A-Za-z\s]+(?:\s[A-Za-z]+)?\s?(?:(?:St|St\.|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Ln|Lane|Dr|Drive|Hwy|Highway)\.)?|^\d+\s[A-Za-z\s]+\s[A-Za-z0-9\s]+$/;
-    //     if (addressRegex.test(input) && input.trim().split(" ").length > 2) {
-    //         return true;
-    //     }
-    //     return false;
-    // };
+
 
     const validateEmail = (email) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|us|org|edu|gov)$/i;
         return emailRegex.test(email);
     };
-    
+
     const validatePhone = (phone) => {
         const phoneRegex = /^(\+1\s?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/;
         return phoneRegex.test(phone);
     };
-    
-    
+
+
     const validateName = (firstName, lastName) => {
         const nameRegex = /^[A-Za-z]+$/;  // Only alphabets
         if (!firstName || !lastName) return false;
         return nameRegex.test(firstName) && nameRegex.test(lastName);
     };
-    
+
     const validateAddress = (address) => {
         return address?.main_text && address?.secondary_text;
     };
-    
+
     const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
         const { text, type } = searchAllData;
-    
+
         setCurrentPage(page);
         let payload = {
             firstName: null,
@@ -233,12 +227,12 @@ const Search = () => {
             email: null,
             Addresses: null,
         };
-    
+
         let errorMessage = null;
-    
+
         if (type === "Name") {
             const { firstName, middleName, lastName } = splitFullName(text);
-    
+
             if (!validateName(firstName, lastName)) {
                 errorMessage = "Please enter a decent name correctly (e.g., 'Jhon Doe')";
             } else if (!firstName || !lastName) {
@@ -270,12 +264,12 @@ const Search = () => {
                 }];
             }
         }
-    
+
         if (errorMessage) {
             Toast.show(errorMessage);
             return;
         }
-    
+
         try {
             setLoading(true);
             const res = await HomeService.setsearchData(payload, page);
@@ -289,7 +283,7 @@ const Search = () => {
                     [page]: persons,
                 }
             }));
-    
+
             setTotalPages(res?.data?.pagination?.totalPages || 1);
         } catch (error) {
             console.error("Search error:", error);
@@ -298,62 +292,9 @@ const Search = () => {
             setLoading(false);
         }
     };
-    
 
 
-    // const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
-    //     const { text, type } = searchAllData;
-    //     // Validation checks
-       
-    //     setCurrentPage(page);
-    //     let payload = {
-    //         firstName: null,
-    //         middleName: null,
-    //         lastName: null,
-    //         phone: null,
-    //         email: null,
-    //         Addresses: null,
-    //     };
 
-    //     if (type === "Name") {
-    //         const { firstName, middleName, lastName } = splitFullName(text);
-    //         payload.firstName = firstName;
-    //         payload.middleName = middleName;
-    //         payload.lastName = lastName;
-    //     } else if (type === "Phone") {
-    //         payload.phone = text;
-    //     } else if (type === "Email") {
-    //         payload.email = text;
-    //     } else if (type === "Address") {
-    //         payload.Addresses = [{
-    //             AddressLine1: selectedAddress?.main_text || null,
-    //             AddressLine2: selectedAddress?.secondary_text || null
-    //         }];
-    //     }
-
-    //     try {
-    //         setLoading(true);
-    //         const res = await HomeService.setsearchData(payload, page);
-    //         // console.log('---------res------------------>>>>>>>>>>>>>>>>>>>>>>>>', res);
-    //         const persons = res?.data?.persons ?? [];
-    //         setSearchResult(persons);
-    //         setListMessage(res?.data?.summary)
-    //         setDataCache(prev => ({
-    //             ...prev,
-    //             [type]: {
-    //                 ...(prev[type] || {}),
-    //                 [page]: persons,
-    //             }
-    //         }));
-
-    //         setTotalPages(res?.data?.pagination?.totalPages || 1);
-    //     } catch (error) {
-    //         console.error("Search error:", error);
-    //         Toast.show("Oops! Something went wrong. Please try again.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     const renderPagination = () => {
         if (totalPages <= 1) return null;
@@ -406,9 +347,13 @@ const Search = () => {
         const flatList = (Component) => (
             <>
                 {(!searchResult.length && !dataCache[selectedTab]?.[currentPage]) ? (
-                    <View style={styles.message_view}>
+                    <View
+                        style={[styles.message_view,
+                        { width: width }
+                        ]}
+                    >
                         <Text style={{ ...styles.message_txt, color: colors.primaryFontColor }}>
-                            Start typing to search for data
+                            Start searching today.
                         </Text>
                     </View>
                 ) : (
@@ -442,7 +387,6 @@ const Search = () => {
                 return (
                     <View>
                         <AdvancedSearch />
-                        {/* {renderPagination()} */}
                     </View>
                 );
             default:
@@ -467,7 +411,10 @@ const Search = () => {
                 {/* Header-------------- */}
                 <CommonHeader />
                 {/* Tabs (non-sticky) */}
+
                 {!isSticky && renderTabs()}
+
+
                 {/* Tab Content */}
                 <Animated.View
                     style={[
@@ -486,7 +433,7 @@ const Search = () => {
             </Animated.ScrollView>
             {/* Sticky Tabs------------------- */}
             {isSticky && (
-                <View style={{ position: 'absolute', top: 0, width: '100%' }}>
+                <View style={{ position: 'absolute', top: 0, width: width }}>
                     {renderTabs()}
                 </View>
             )}
@@ -496,52 +443,12 @@ const Search = () => {
 
 export default Search;
 
-const customLocationStyles = {
-    container: {
-        width: '100%',
-        marginHorizontal: 0,
-    },
-    input: {
-        height: moderateScale(48),
-        borderColor: '#ccc',
-        borderRadius: moderateScale(25),
-    },
-    suggestionsContainer: {
-        backgroundColor: '#fff',
-    },
-    suggestionItem: {
-        padding: moderateScale(15),
-    },
-    suggestionText: {
-        main: {
-            fontSize: moderateScale(15),
-            fontFamily: FONTS.Inter.regular,
-            color: '#333',
-        },
-        secondary: {
-            fontSize: moderateScale(14),
-            fontFamily: FONTS.Inter.regular,
-            color: '#666',
-        }
-    },
-    loadingIndicator: {
-        color: '#1C81E9',
-    },
-    placeholder: {
-        color: '#999',
-        fontSize: moderateScale(13),
-        fontFamily: FONTS.Inter.regular,
-    }
-};
+
 // define your styles
 const styles = StyleSheet.create({
     Container: {
         flex: 1,
         backgroundColor: '#F0F0F0',
-    },
-    top_view: {
-        width: width,
-        paddingHorizontal: moderateScale(10),
     },
     tabView: {
         flexDirection: 'row',
@@ -591,7 +498,6 @@ const styles = StyleSheet.create({
         padding: moderateScale(8),
     },
     message_view: {
-        width: width,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: moderateScale(70),

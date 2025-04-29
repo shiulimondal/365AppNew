@@ -8,10 +8,10 @@ import LoadingSpinner from '../../../Ui/LoadingSpinner';
 
 
 const { width, height } = Dimensions.get('screen');
-const PhoneNumber = ({ phoneNumber, openLock}) => {
+const PhoneNumber = ({ phoneNumber, openLock }) => {
     // const normalPhoneNumbers = Array.isArray(phoneNumber) ? phoneNumber : [phoneNumber];
-    console.log('================================phoneNumber===========',phoneNumber);
-    
+    // console.log('================================phoneNumber===========',phoneNumber);
+
 
     const { colors } = useTheme();
     const [showContent, setShowContent] = useState(false);
@@ -63,27 +63,38 @@ const PhoneNumber = ({ phoneNumber, openLock}) => {
     };
     return (
         <View>
-            <View style={styles.hide_view}>
-                <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Phone Number: ({phoneNumber?.length})</Text>
-                    {
-                        openLock === true ?
-                        <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
-                        :
-                        <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+            
 
-                    }
-                 
-                </View>
-                <TouchableOpacity onPress={toggleCard}>
-                    {showHiddenCard === false ?
-                        <Icon name={"down"} type={"AntDesign"} size={18} />
-                        :
-                        <Icon name={"up"} type={"AntDesign"} size={18} />
-                    }
+            {typeof normalPhoneNumbers === 'string' ? (
+                // Show only this when it's a string
+                <TouchableOpacity onPress={toggleCard} style={styles.hide_view}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Phone Number:</Text>
+                        <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
+                    </View>
                 </TouchableOpacity>
+            ) : (
+                <View style={styles.hide_view}>
+                    <TouchableOpacity onPress={toggleCard} style={styles.lockview}>
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Phone Number: ({phoneNumber?.length})</Text>
+                        {openLock ? (
+                            <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
+                        ) : (
+                            <Icon name={"lock"} type={"SimpleLineIcons"} size={18} />
+                        )}
+                    </TouchableOpacity>
 
-            </View>
+                    <TouchableOpacity onPress={toggleCard}>
+                        {showHiddenCard ? (
+                            <Icon name={"up"} type={"AntDesign"} size={18} />
+                        ) : (
+                            <Icon name={"down"} type={"AntDesign"} size={18} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+            )}
+
+
 
             {showHiddenCard && (
                 <View style={styles.full_card}>

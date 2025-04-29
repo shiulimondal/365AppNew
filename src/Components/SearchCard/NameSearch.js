@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
 import NavigationService from '../../Services/Navigation';
 import { setSelectedUserId, setUserData } from '../../Redux/reducer/SearchId';
 import { useDispatch } from 'react-redux';
+import { clearPaymentData } from '../../Redux/reducer/paymentSlice';
 
 const { width, height } = Dimensions.get('window');
 
 const NameSearch = ({ item, index }) => {
     const { colors } = useTheme();
     const dispatch = useDispatch();
+    const { width, height } = useWindowDimensions();
 
     const renderBlurredText = (text) => {
         if (typeof text !== "string") {
@@ -48,10 +50,14 @@ const NameSearch = ({ item, index }) => {
 
                 dispatch(setSelectedUserId(item?.personId));  // Store selectedUserId
                 dispatch(setUserData(item));  // Store userData
-
+                dispatch(clearPaymentData());
                 NavigationService.navigate('SearchProfile', { userId: item?.personId });
             }}
-            key={index} style={styles.Container}>
+            key={index} style={{
+                marginHorizontal: moderateScale(10),
+                marginTop: moderateScale(15),
+                width: width - moderateScale(20)
+            }}>
             <View style={{ ...styles.card_top, backgroundColor: colors.cardColor, }}>
                 <View>
                     <Text style={{ ...styles.user_name, color: colors.primaryFontColor }}>{item?.name}</Text>
@@ -89,9 +95,7 @@ export default NameSearch;
 // define your styles
 const styles = StyleSheet.create({
     Container: {
-        marginHorizontal: moderateScale(10),
-        marginTop: moderateScale(15),
-        width: width - moderateScale(20)
+
     },
     card_top: {
         borderTopRightRadius: moderateScale(15),

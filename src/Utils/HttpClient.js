@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const BASE_URL = 'https://365instantcheck.com/api';
-const BASE_URL = 'https://dev.365instantcheck.com/api';
+// const BASE_URL = 'https://365instantcheck.com/api'; --original one
+const BASE_URL = 'https://dev.365instantcheck.com/api'; // dev url
 
-// export const PAY_URL = 'https://365instantcheck.com/api';
-export const PAY_URL = 'https://dev.365instantcheck.com/api';
+// export const PAY_URL = 'https://365instantcheck.com/api'; --original one
+export const COUPON_URL = 'https://dev.365instantcheck.com/api/admin';
+export const PAY_URL = 'https://dev.365instantcheck.com/api'; // dev url
 
 export const payment_api_key = '233830ba05c87e5cd4a82b6ba36763e77b0bdcb1d664eb35edd14177d53c2bed';
 export const frontend_api_key = 'dc8915f11ecfe29826baa0f4b10669fbe1b3f97bf3ac08376949ee0aadc08e03';
@@ -30,8 +31,8 @@ async function Delete(endpoint, params) {
 }
 async function request(endpoint, params = null, method = 'GET', customHeaders = {}) {
     const token = await AsyncStorage.getItem('token');
-    console.log('token------------------------------token',token);
-    
+    console.log('token------------------------------token', token);
+
     const url = BASE_URL + endpoint;
     console.log('URL:--------------------------00000------------------------', url);
     const PAY_url = PAY_URL + endpoint;

@@ -33,6 +33,8 @@ import DomainRecords from '../../Components/SearchCard/FullSearch/DomainRecords'
 import Relatives from '../../Components/SearchCard/FullSearch/Relatives';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchLoader from '../../Ui/SearchLoader ';
+import { clearPaymentData } from '../../Redux/reducer/paymentSlice';
+import AliasesCard from '../../Components/SearchCard/FullSearch/AliasesCard';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -41,12 +43,12 @@ const SearchProfile = () => {
     const { colors } = useTheme();
     const route = useRoute();
     const getUserId = route?.params?.userId
-    console.log('=================reali  fulll user data    dddddddddddiiiii======', getUserId);
     const token = useSelector(state => state.Payment.token);
     const transactionId = useSelector(state => state.Payment.transactionId);
     const selectedUserId = useSelector(state => state.UserId.selectedUserId);
-    console.log('login_status---------------<<<<<setPaymentData------------------', token, transactionId);
-    console.log('userdata with iddddddddddddddddddddddddddd---------------<------------------', selectedUserId);
+    // console.log('=================reali  fulll user data    dddddddddddiiiii======', getUserId);
+    // console.log('payment data---------------<<<<<setPaymentData------------------', token, transactionId);
+    // console.log('userdata with iddddddddddddddddddddddddddd---------------<------------------', selectedUserId);
     const [isplanModal, setPlanModal] = useState(false);
     const [ispaymentModal, setPaymentModal] = useState(false);
     const [price, setPrice] = useState('');
@@ -72,6 +74,7 @@ const SearchProfile = () => {
 
     const [userdata, setUserData] = useState({})
     const [phoneNumber, setphoneNumber] = useState({})
+    const [aliasesData, setAliasesData] = useState({})
     const [emailData, setEmailData] = useState({})
     const [addressData, setaddressData] = useState({})
     const [criminalRecords, setCriminalRecords] = useState({})
@@ -92,39 +95,45 @@ const SearchProfile = () => {
         } else if (!token && !transactionId) {
             handleFullSearch();
         } else {
-            console.log('⚠️ Incomplete data: token or transactionId is missing.');
+            console.log(' Incomplete data: token or transactionId is missing.');
         }
     }, [token, transactionId, selectedUserId]);
+
+
 
     const handleFullUpdateSearch = async () => {
         const payload = {
             transactionId,
             tahoeId: selectedUserId
         };
-
         console.log('📤 Sending update payload to API:', payload);
-
         try {
             setIsLoading(true);
             const res = await HomeService.setFullUpdateData(payload, token);
-            setShowButton(false)
-            setOpenLock(true)
-            const persons = res?.data?.persons ?? [];
-            setUserData(persons);
-            setphoneNumber(persons[0]?.phoneNumbers)
-            setEmailData(persons[0]?.emailAddresses)
-            setaddressData(persons[0]?.addresses)
-            setCriminalRecords(persons[0]?.criminalRecords)
-            setBusinessRecords(persons[0]?.businessRecords)
-            setWorkplaceRecords(persons[0]?.workplaceRecords)
-            setForeclosureRecords(persons[0]?.foreclosureRecords)
-            setDebtRecords(persons[0]?.debtRecords)
-            setPropertyRecords(persons[0]?.propertyRecords)
-            setEvictionRecords(persons[0]?.evictionRecords)
-            setDomainRecords(persons[0]?.domainRecords)
-            setAssociatesRecords(persons[0]?.relatives)
+            console.log('✅ +++++++++++++++++++++++++++++++Full update response data:', res);
+            if (res?.success === true) {
+                setShowButton(false)
+                setOpenLock(true)
+                const persons = res?.data?.persons ?? [];
+                setUserData(persons);
+                setphoneNumber(persons[0]?.phoneNumbers)
+                setAliasesData(persons[0]?.otherObservedNames)
+                setEmailData(persons[0]?.emailAddresses)
+                setaddressData(persons[0]?.addresses)
+                setCriminalRecords(persons[0]?.criminalRecords)
+                setBusinessRecords(persons[0]?.businessRecords)
+                setWorkplaceRecords(persons[0]?.workplaceRecords)
+                setForeclosureRecords(persons[0]?.foreclosureRecords)
+                setDebtRecords(persons[0]?.debtRecords)
+                setPropertyRecords(persons[0]?.propertyRecords)
+                setEvictionRecords(persons[0]?.evictionRecords)
+                setDomainRecords(persons[0]?.domainRecords)
+                setAssociatesRecords(persons[0]?.relatives)
+                console.log('✅ Full update response data:', persons);
 
-            console.log('✅ Full update response data:', persons);
+            }
+
+
         } catch (error) {
             console.error("❌ Full update error:", error);
             Toast.show("Oops! Something went wrong. Please try again.");
@@ -138,14 +147,15 @@ const SearchProfile = () => {
         const payload = {
             "tahoeId": getUserId,
         };
-        console.log('Sending payload to:', userRealId);
+        console.log('--------------- ***********Sending  in complete payload to:------------------------------', userRealId);
         try {
             setIsLoading(true);
             const res = await HomeService.setFullData(userRealId, payload);
             const persons = res?.data?.persons ?? [];
-            console.log('⚠️ Incomplete Fulll data ------------------------------------: .', persons);
+            console.log('✅ Incomplete Fulll data ------------------------------------: .', persons);
             setUserData(persons);
             setphoneNumber(persons[0]?.phoneNumbers)
+            setAliasesData(persons[0]?.otherObservedNames)
             setEmailData(persons[0]?.emailAddresses)
             setaddressData(persons[0]?.addresses)
             setCriminalRecords(persons[0]?.criminalRecords)
@@ -187,12 +197,16 @@ const SearchProfile = () => {
                                     backgroundColor: '#f0f0f0',
                                     transform: [{ translateY }],
                                     opacity,
-                                    marginTop: moderateScale(-50),
+                                    marginTop: moderateScale(-30),
                                 },
                             ]}>
-                           
+
 
                             <View style={styles.card_view}>
+                                {aliasesData !== undefined && (
+                                    <AliasesCard aliasesData={aliasesData} />
+                                )}
+
                                 {phoneNumber !== undefined && (
                                     <PhoneNumber openLock={openLock} phoneNumber={phoneNumber} />
                                 )}
@@ -241,8 +255,6 @@ const SearchProfile = () => {
                                     <Relatives openLock={openLock} associatesRecords={associatesRecords} />
                                 )}
                             </View>
-
-
                         </Animated.View>
                     </ScrollView>
 

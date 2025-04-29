@@ -69,44 +69,6 @@ const Login = () => {
         return Object.keys(errors).length === 0;
     };
 
-    // const handleSubmit = async () => {
-    //     if (!validate()) {
-    //         return;
-    //     }
-    //     const payload = {
-    //         email: email,
-    //         password: password,
-    //     };
-    //     console.log('Sending log payload to:', payload);
-    //     try {
-    //         setbuttonLoader(true);
-    //         const res = await AuthService.setLogin(payload);
-    //         console.log('✅ Log API response:---------------------------', res);
-    //         const normalizedUserData = {
-    //             id: res.data?.user_data?.id,
-    //             fullName: res.data?.user_data?.fullName,
-    //             email: res.data?.user_data?.email,
-    //             phNumber: res.data?.user_data?.phNumber,
-    //             address: res.data?.user_data?.address,
-    //             imageUrl: res.data?.user_data?.imageUrl,
-    //             token: res.data?.token,
-    //         };
-    //         await AsyncStorage.setItem('token', res.data?.token);
-    //        const userData =await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-    //         if (userData) {
-    //             dispatch(setUser(JSON.parse(userData)));  
-    //         }
-    //         AuthService.setAccount(res.data);
-    //         NavigationService.navigate('BottomTab')
-    //         Toast.show(res?.message);
-    //     } catch (error) {
-    //         console.error("Full Log error:", error);
-    //         Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
-    //     } finally {
-    //         setbuttonLoader(false);
-    //     }
-    // };
-
     const handleSubmit = async () => {
         if (!validate()) {
             return;
@@ -116,12 +78,12 @@ const Login = () => {
             password: password,
         };
         console.log('Sending log payload to:', payload);
-    
+
         try {
             setbuttonLoader(true);
             const res = await AuthService.setLogin(payload);
             console.log('✅ Log API response:---------------------------', res);
-    
+
             const normalizedUserData = {
                 id: res.data?.user_data?.id,
                 fullName: res.data?.user_data?.fullName,
@@ -130,14 +92,14 @@ const Login = () => {
                 address: res.data?.user_data?.address,
                 imageUrl: res.data?.user_data?.imageUrl,
             };
-    
+
             const token = res.data?.token;
-    
+
             // Save token separately
             await AsyncStorage.setItem('token', token);
             // Save userData
             await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-    
+
             // Dispatch properly
             dispatch(setUser({
                 token,
@@ -145,7 +107,7 @@ const Login = () => {
                 login_status: true,
                 guest_status: false,
             }));
-    
+
             AuthService.setAccount(res.data);
             NavigationService.navigate('BottomTab');
             Toast.show(res?.message);
@@ -156,8 +118,8 @@ const Login = () => {
             setbuttonLoader(false);
         }
     };
-    
-    
+
+
     return (
         <View style={{ ...styles.Container, }}>
             <ScrollView showsVerticalScrollIndicator={false}

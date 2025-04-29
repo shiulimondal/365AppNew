@@ -23,6 +23,7 @@ import Toast from "react-native-simple-toast";
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../Redux/reducer/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TypePicker from '../../Ui/TypePicker';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -115,46 +116,8 @@ const SignUp = () => {
 
         return Object.keys(errors).length === 0;  // ✅ return true if no error
     };
+    ;
 
-    // const handleSubmit = async () => {
-    //     if (!validate()) {
-    //         return;
-    //     }
-    //     const payload = {
-    //         fullName: name,
-    //         email: email,
-    //         password: password,
-    //         accountType: selectAccount,
-    //         businessName: businessName,
-    //         position: position,
-    //         industry: selectIndustry,
-    //     };
-    //     console.log('Sending register payload to:', payload);
-    //     try {
-    //         setbuttonLoader(true)
-    //         const res = await AuthService.setRegister(payload);
-    //         console.log('✅ Register API response:', res);
-    //         const normalizedUserData = {
-    //             id: res.data?.id,
-    //             fullName: res.data?.fullName,
-    //             email: res.data?.email,
-    //             accountType: res.data?.accountType,
-    //             createdAt: res.data?.createdAt,
-    //         };
-    //         const userData =await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-    //         if (userData) {
-    //             dispatch(setUser(JSON.parse(userData)));  
-    //         }
-    //         NavigationService.navigate('Login');
-    //         Toast.show(res?.message);
-    //     } catch (error) {
-    //         console.error("Full Reg error:", error);
-    //         Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
-    //     } finally {
-    //         setbuttonLoader(false);
-    //     }
-    // };
-   
     const handleSubmit = async () => {
         if (!validate()) {
             return;
@@ -169,12 +132,12 @@ const SignUp = () => {
             industry: selectIndustry,
         };
         console.log('Sending register payload to:', payload);
-    
+
         try {
             setbuttonLoader(true);
             const res = await AuthService.setRegister(payload);
             console.log('✅ Register API response:', res);
-    
+
             const normalizedUserData = {
                 id: res.data?.id,
                 fullName: res.data?.fullName,
@@ -182,11 +145,11 @@ const SignUp = () => {
                 accountType: res.data?.accountType,
                 createdAt: res.data?.createdAt,
             };
-    
+
             // Save user data
             await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-            await AsyncStorage.setItem('token', ''); 
-    
+            await AsyncStorage.setItem('token', '');
+
             // Dispatch properly
             dispatch(setUser({
                 token: '',
@@ -194,7 +157,7 @@ const SignUp = () => {
                 login_status: true,
                 guest_status: false,
             }));
-    
+
             NavigationService.navigate('Login');
             Toast.show(res?.message);
         } catch (error) {
@@ -204,8 +167,8 @@ const SignUp = () => {
             setbuttonLoader(false);
         }
     };
-    
-    
+
+
 
     return (
         <View style={{ ...styles.Container, }}>
@@ -240,7 +203,7 @@ const SignUp = () => {
                         </View> */}
                         <View>
                             <Text style={{ ...styles.title_txt, marginTop: 20, color: colors.primaryFontColor }}>Account Type</Text>
-                            <DropdownPicker
+                            <TypePicker
                                 labelKey="name"
                                 valueKey="id"
                                 placeholder="Account Type"

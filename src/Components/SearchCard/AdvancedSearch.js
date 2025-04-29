@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity, FlatList, useWindowDimensions } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
@@ -14,6 +14,8 @@ const { width, height } = Dimensions.get('window');
 
 const AdvancedSearch = () => {
     const { colors } = useTheme();
+
+    const { widthLong, height } = useWindowDimensions();
 
     const [selectedAge, setSelectedAge] = useState('');
     const [selecteState, setSelectedState] = useState('');
@@ -31,8 +33,7 @@ const AdvancedSearch = () => {
     const [listMessage, setListMessage] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    // console.log('dataCache---------------------------', dataCache);
-    console.log('advanceeeeeeeeeeeeeeehResult-------------addd--------------', searchResult);
+
 
     const isEmail = (input) => /^[\w-\.]+@([\w-]+\.)+[\w-]{2,10}$/.test(input);
     const isName = (input) => /^[a-zA-Z ]*$/.test(input) && input.trim().length > 2;
@@ -115,13 +116,7 @@ const AdvancedSearch = () => {
             const persons = res?.data?.persons ?? [];
             setSearchResult(persons);
             setListMessage(res?.data?.summary)
-            // setDataCache(prev => ({
-            //     ...prev,
-            //     [type]: {
-            //         ...(prev[type] || {}),
-            //         [page]: persons,
-            //     }
-            // }));
+
 
             setTotalPages(res?.data?.pagination?.totalPages || 1);
         } catch (error) {
@@ -170,7 +165,9 @@ const AdvancedSearch = () => {
     };
 
     return (
-        <View>
+        <View style={{
+            // width:widthLong,
+        }}>
             {loading ? (
                 <View style={styles.loder_view}>
                     <ShimmerLoader />
@@ -196,7 +193,14 @@ const AdvancedSearch = () => {
                     {renderPagination()}
                 </View>
             ) : (
-                <View style={styles.main_card_view}>
+                <View style={{
+                    backgroundColor: '#FFFFFF',
+                    paddingBottom: moderateScale(30),
+                    borderBottomRightRadius: moderateScale(25),
+                    borderBottomLeftRadius: moderateScale(25),
+                    elevation: 1,
+                    width:widthLong
+                }}>
                     <View style={styles.Container}>
 
                         <Text style={{ ...styles.userFname, color: colors.primaryFontColor }}>First Name</Text>
@@ -350,11 +354,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: moderateScale(7)
     },
     main_card_view: {
-        backgroundColor: '#FFFFFF',
-        paddingBottom: moderateScale(30),
-        borderBottomRightRadius: moderateScale(25),
-        borderBottomLeftRadius: moderateScale(25),
-        elevation: 1
+       
     },
     sec_view: {
         marginTop: moderateScale(50),

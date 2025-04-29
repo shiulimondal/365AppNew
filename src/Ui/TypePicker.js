@@ -5,7 +5,7 @@ import { FONTS } from '../Constants/Fonts';
 import { moderateScale } from '../Constants/PixelRatio';
 
 const { height, width } = Dimensions.get('screen');
-const DropdownPicker = ({ label, options, selectedValue, onValueChange, labelKey = "name", valueKey = "value", placeholder = "Select" }) => {
+const TypePicker = ({ label, options, selectedValue, onValueChange, labelKey = "name", valueKey = "value", placeholder = "Select" }) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     const handleOptionPress = (value) => {
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: moderateScale(8),
         padding: moderateScale(16),
-        height: moderateScale(300)
     },
     option: {
         padding: moderateScale(15),
@@ -111,4 +110,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default DropdownPicker;
+export default TypePicker;

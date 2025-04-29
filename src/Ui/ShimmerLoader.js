@@ -1,10 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 import ShimmerPlaceholder from 'react-native-shimmer-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import { moderateScale } from '../Constants/PixelRatio';
 
 const ShimmerLoader = () => {
+    const { width, height } = useWindowDimensions();
     return (
         <View style={{ padding: moderateScale(15) }}>
             {[...Array(10)].map((_, i) => (
@@ -15,7 +16,7 @@ const ShimmerLoader = () => {
                         style={{
                             height: moderateScale(150),
                             borderRadius: moderateScale(10),
-                            width: moderateScale(320),
+                            width: width - moderateScale(25),
                         }}
                         shimmerStyle={{ borderRadius: moderateScale(10) }}
                     />

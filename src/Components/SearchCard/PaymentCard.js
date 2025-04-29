@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View, Text, StyleSheet, Dimensions, TouchableOpacity,
     TextInput, ActivityIndicator,
@@ -8,15 +8,46 @@ import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
 import { useTheme } from '../../../ThemeContext';
 import { WebView } from 'react-native-webview';
-import { frontend_api_key, PAY_URL, payment_api_key } from '../../Utils/HttpClient';
+import { COUPON_URL, frontend_api_key, PAY_URL, payment_api_key } from '../../Utils/HttpClient';
 import NavigationService from '../../Services/Navigation';
 import { setPaymentData } from '../../Redux/reducer/paymentSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const { width, height } = Dimensions.get('window');
 
 const PaymentCard = ({ price, setPaymentModal, planName }) => {
-    console.log('=================paymentttttttttttttttt===================', planName, price);
+    const { login_status, guest_status, userData } = useSelector(state => state.User);
+
+    // console.log('=================payment daaaaaaaaaaaaaaaa user===================', userData);
+
+    const [userToken, setUserToken] = useState(null);
+    useEffect(() => {
+        checkUserStatus()
+    }, [])
+
+    const checkUserStatus = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        if (userToken) {
+            setUserToken(userToken);
+        } else {
+            setUserToken(null);
+        }
+    };
+
+    useEffect(() => {
+        if (userData) {
+            if (!cardHolder && userData.fullName) {
+                setCardHolder(userData.fullName);
+            }
+            if (!emailID && userData.email) {
+                setEmailID(userData.email);
+            }
+        }
+    }, [userData, cardHolder, emailID]);
+
+
     const dispatch = useDispatch()
     const { colors } = useTheme();
     const cvvRef = useRef(null);
@@ -26,92 +57,139 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
     const [cardNumber, setCardNumber] = useState('');
     const [expiry, setExpiry] = useState('');
     const [cvv, setCvv] = useState('');
-    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const [coupon, setCoupon] = useState({ code: '', error: '', loading: false, applied: false });
-    const [discountedAmount, setDiscountedAmount] = useState(null);
-    // const [paymentLoading, setPaymentLoading] = useState(false);
 
-    
+    const [discountedAmount, setDiscountedAmount] = useState(null);
+    const [coupon, setCoupon] = useState({ code: '' });
+    const [couponError, setCouponError] = useState('');
+    const [couponLoading, setCouponLoading] = useState(false);
+    const [couponApplied, setCouponApplied] = useState(false);
+
 
     const handleCouponApply = async () => {
         try {
-            setCoupon(prev => ({ ...prev, loading: true, error: '' }));
-            const response = await fetch(`${PAY_URL}/coupon/${coupon.code}/${planName}`, {
+            setCouponLoading(true);
+            setCouponError({ message: '', type: '' });
+
+            const url = `${COUPON_URL}/coupons/${coupon.code}`;
+
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
                     'x-payment-api-key': payment_api_key,
                     'x-frontend-api-key': frontend_api_key,
                 },
             });
 
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+            } catch (err) {
+                const text = await response.text();
+                console.error('Raw response text:', text);
+                throw new Error('Invalid JSON response from server');
+            }
+
             if (data?.success) {
-                const { discount, expiryDate, type } = data.data;
+                const { discountType, discountValue, expiryDate } = data.data;
                 const now = new Date();
                 if (now >= new Date(expiryDate)) {
-                    setCoupon({ code: '', error: 'Coupon expired!', applied: false, loading: false });
+                    setCoupon({ code: '' });
+                    setCouponError({ message: 'Coupon expired!', type: 'error' });
+                    setCouponApplied(false);
                     setDiscountedAmount(null);
                     return;
                 }
 
                 let finalAmount = parseFloat(price);
-                if (type === 'percentage') {
-                    finalAmount = finalAmount - (finalAmount * discount) / 100;
-                } else if (type === 'fixed') {
-                    finalAmount = finalAmount - discount;
+                if (discountType.toLowerCase() === 'percentage') {
+                    finalAmount = finalAmount - (finalAmount * discountValue) / 100;
+                } else if (discountType.toLowerCase() === 'fixed') {
+                    finalAmount = finalAmount - discountValue;
                 }
                 setDiscountedAmount(finalAmount.toFixed(2));
-                setCoupon(prev => ({ ...prev, applied: true, loading: false }));
+                setCouponApplied(true);
+
+                setCouponError({ message: 'Coupon applied successfully!', type: 'success' });
             } else {
                 throw new Error(data?.message || 'Invalid coupon');
             }
         } catch (error) {
-            setCoupon({ code: '', error: error.message, applied: false, loading: false });
+            setCoupon({ code: '' });
+            setCouponError({ message: error.message, type: 'error' });
+            setCouponApplied(false);
             setDiscountedAmount(null);
+        } finally {
+            setCouponLoading(false);
         }
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /\S+@\S+\.\S+/;
+        return emailRegex.test(email);
+    };
+
+    const validateCardNumber = (cardNumber) => {
+        return /^\d{16}$/.test(cardNumber); // 16 digits for card number
+    };
+
+    const validateCVV = (cvv) => {
+        return /^\d{3,4}$/.test(cvv); // CVV must be 3 or 4 digits
+    };
+
+    const validateExpiry = (expiry) => {
+        const [expMonth, expYear] = expiry.split('/');
+        const month = parseInt(expMonth, 10);
+        const year = parseInt(expYear, 10);
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+
+        if (!expiry || !/^\d{2}\/\d{4}$/.test(expiry)) return 'Enter expiry as MM/YYYY.';
+        if (month < 1 || month > 12) return 'Invalid month.';
+        if (year < currentYear || (year === currentYear && month < currentMonth)) return 'Card is expired.';
+        return null;
+    };
 
     const validateInputs = () => {
-        const newErrors = {};
-        const [expMonth, expYear] = expiry.split('/');
-
-        if (!cardNumber || !/^\d{16}$/.test(cardNumber)) {
-            newErrors.cardNumber = 'Card number must be 16 digits.';
+        if (!cardHolder.trim()) {
+            Toast.show('Cardholder name is required');
+            return false;
+        }
+        if (!emailID.trim()) {
+            Toast.show('Email is required');
+            return false;
+        } else if (!validateEmail(emailID)) {
+            Toast.show('Enter a valid email ID');
+            return false;
         }
 
-        if (!expiry || !/^\d{2}\/\d{4}$/.test(expiry)) {
-            newErrors.expiry = 'Enter expiry as MM/YYYY.';
-        } else {
-            const month = parseInt(expMonth, 10);
-            const year = parseInt(expYear, 10);
-            const now = new Date();
-            const currentMonth = now.getMonth() + 1;
-            const currentYear = now.getFullYear();
-
-            if (month < 1 || month > 12) {
-                newErrors.expiry = 'Invalid month.';
-            } else if (year < currentYear || (year === currentYear && month < currentMonth)) {
-                newErrors.expiry = 'Card is expired.';
-            }
+        if (!cardNumber.trim()) {
+            Toast.show('Card number is required');
+            return false;
+        } else if (!validateCardNumber(cardNumber)) {
+            Toast.show('Card number must be 16 digits');
+            return false;
         }
 
-        if (!cvv || !/^\d{3,4}$/.test(cvv)) {
-            newErrors.cvv = 'CVV must be 3 or 4 digits.';
+        const expiryError = validateExpiry(expiry);
+        if (expiryError) {
+            Toast.show(expiryError);
+            return false;
         }
 
-        if (!emailID || !/\S+@\S+\.\S+/.test(emailID)) {
-            newErrors.email = 'Enter a valid email.';
+        // Validate CVV
+        if (!cvv.trim()) {
+            Toast.show('CVV is required');
+            return false;
+        } else if (!validateCVV(cvv)) {
+            Toast.show('CVV must be 3 or 4 digits');
+            return false;
         }
 
-        if (!cardHolder) {
-            newErrors.cardHolder = 'Cardholder name is required.';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return true;
     };
 
     const [webViewLoaded, setWebViewLoaded] = useState(false);
@@ -126,7 +204,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             expYear,
             cvv,
         };
-        console.log('===================== masterrrrr  cardData===============', cardData);
+        // console.log('===================== masterrrrr  cardData===============', cardData);
         if (webViewLoaded) {
             webViewRef.current?.postMessage(JSON.stringify(cardData));
         } else {
@@ -136,26 +214,26 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
     }
 
     const handlePaymentSubmit = async (nonce) => {
-        console.log('===============payment nonce=====================', nonce);
+        // console.log('===============payment nonce=====================', nonce);
         if (!validateInputs()) return;
-        const [mm, yyyy] = expiry.split('/');
 
         const body = {
             amount: discountedAmount ? parseFloat(discountedAmount) : parseFloat(price),
             productOriginalPrice: parseFloat(price),
             productType: planName,
-            firstName: cardHolder.split(' ')[0] || '',
-            lastName: cardHolder.split(' ')[1] || '',
-            email: emailID,
+            firstName: cardHolder.split(' ')[0] || userData?.fullNamesplit(' ')[0] || '',
+            lastName: cardHolder.split(' ')[1] || userData?.fullNamesplit(' ')[0] || '',
+            email: emailID || userData?.email,
             paymentNonce: nonce,
-            couponCode: coupon.code,
-            expiryMonth: mm,
-            expiryYear: yyyy,
+            couponCode: coupon?.code || '',
         };
         console.log('===================payment payloade=================', body);
+        const url = `${PAY_URL}/payment/v2`;
+        console.log('===========================payment urllllllllllllll=========', url);
+
         try {
             setLoading(true);
-            const res = await fetch(`${PAY_URL}/payment/v2`, {
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,8 +268,8 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
         backgroundColor: colors.inputBox,
         borderColor: colors.inputBorder,
         borderWidth: 1,
-        borderRadius: 10,
-        height: 40,
+        borderRadius: moderateScale(10),
+        height: moderateScale(40),
         paddingHorizontal: 10,
     };
 
@@ -202,9 +280,9 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             <View style={[styles.card, { backgroundColor: colors.secondaryThemeColor }]}>
                 <Text style={[styles.label, { color: colors.secondaryFontColor }]}>After making the payment:</Text>
                 {[
-                    '1. Payment confirms in minutes.',
-                    '2. Confirmation email sent.',
-                    '3. Features unlocked.',
+                    '1. Person search details will be unlocked in the app.',
+                    '2. A copy of your invoice will be emailed to you.',
+                    '3. A copy of the background report will also be emailed to you.',
                 ].map((text, i) => (
                     <Text key={i} style={[styles.subtext, { color: colors.tintText }]}>{text}</Text>
                 ))}
@@ -213,18 +291,32 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                     <TextInput
                         ref={cvvRef}
                         placeholder="Enter a coupon code"
+                        placeholderTextColor={colors.tintText}
                         value={coupon}
-                        onChangeText={(text) => setCoupon(prev => ({ ...prev, code: text }))}
-
+                        autoCapitalize="characters"
+                        onChangeText={(text) => setCoupon(prev => ({ ...prev, code: text.toUpperCase() }))}
                         style={[styles.flexInput, inputStyle]}
                     />
                     <TouchableOpacity
                         style={[styles.applyButton, { backgroundColor: colors.buttonColor }]}
-                        onPress={() => handleCouponApply()}
+                        onPress={handleCouponApply}
+                        disabled={couponLoading}
                     >
-                        <Text style={[styles.buttonText, { color: colors.secondaryThemeColor }]}>Apply</Text>
+                        {couponLoading ? (
+                            <ActivityIndicator size="small" color={colors.secondaryThemeColor} />
+                        ) : (
+                            <Text style={[styles.buttonText, { color: colors.secondaryThemeColor }]}>Apply</Text>
+                        )}
                     </TouchableOpacity>
                 </View>
+                {couponError?.message ? (
+                    <Text style={[
+                        styles.error_message,
+                        { color: couponError.type === 'success' ? 'green' : 'red' }
+                    ]}>
+                        {couponError.message}
+                    </Text>
+                ) : null}
 
                 <Text style={[styles.sectionTitle, { color: colors.secondaryFontColor }]}>Pay With Card</Text>
 
@@ -235,6 +327,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                     onChangeText={(val) => setCardHolder(val)}
                     style={[styles.fullInput, inputStyle]}
                 />
+
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Email Address</Text>
                 <TextInput
@@ -255,10 +348,12 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                     maxLength={16}
                 />
 
+
                 <View style={styles.row}>
                     <View>
                         <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Expiry Date</Text>
                         <View style={[styles.expiryInput, inputStyle]}>
+
                             <TextInput
                                 value={expiry}
                                 onChangeText={(text) => {
@@ -275,15 +370,13 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                                         formatted += '/';
                                     }
                                     setExpiry(formatted);
-                                    // if (formatted.length === 7) {
-                                    //     cvvRef.current?.focus();
-                                    // }
                                 }}
                                 placeholder="MM/YYYY"
                                 keyboardType="numeric"
                                 style={styles.expiryText}
                                 maxLength={7}
                             />
+
 
                         </View>
                     </View>
@@ -300,7 +393,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                         />
                     </View>
                 </View>
-
 
                 <TouchableOpacity
                     onPress={handlePayment}
@@ -390,8 +482,8 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.Inter.exBold,
     },
     subtext: {
-        fontSize: moderateScale(11),
-        fontFamily: FONTS.Inter.regular,
+        fontSize: moderateScale(10),
+        fontFamily: FONTS.Inter.medium,
         marginTop: moderateScale(3),
     },
     sectionTitle: {
@@ -455,4 +547,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: moderateScale(5),
     },
+    error_message: {
+        fontSize: moderateScale(10),
+        fontFamily: FONTS.Inter.medium,
+        color: 'red'
+    }
 });

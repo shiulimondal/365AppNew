@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, Image, Pressable, StatusBar, TouchableOpacity, useWindowDimensions, ImageBackground } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import Icon from '../../Ui/Icon';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -7,13 +7,24 @@ import { FONTS } from '../../Constants/Fonts';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
+
+// const { width, height } = Dimensions.get('window');
 
 const SearchHeader = ({ userdata }) => {
-    const { login_status, guest_status } = useSelector(state => state.User);
+    const { login_status, guest_status, userData } = useSelector(state => state.User);
     const navigation = useNavigation();
     const { colors } = useTheme();
-    // console.log('-------------------user headerrrr--------', userdata);
+    const { width, height } = useWindowDimensions();
+
+    const [username, setUserName] = useState('')
+    useEffect(() => {
+        if (userData) {
+            if (userData.fullName) {
+                setUserName(userData.fullName);
+            }
+
+        }
+    }, [userData]);
 
     const renderBlurredText = (text) => {
         if (!text || typeof text !== "string") {
@@ -41,27 +52,39 @@ const SearchHeader = ({ userdata }) => {
             </Text>
         ));
     };
-
-
     return (
-        <View style={styles.Container}>
-            <StatusBar backgroundColor={'rgba(10, 104, 201, 1)'} barStyle="light-content" translucent />
-            <View style={styles.img_position}>
-                <Image
-                    source={require('../../assets/images/headerBG.png')}
-                    style={styles.header_bg_img}
-                />
-            </View>
+        <ImageBackground source={require('../../assets/images/headerBG.png')}
+            resizeMode="cover"
+            style={{ height: moderateScale(260), width: width }}>
+            <StatusBar backgroundColor={'rgba(10, 104, 201, 0.1)'} barStyle="light-content" translucent />
+
             <View style={styles.logo_view}>
                 <Image
                     source={require('../../assets/images/logo.png')}
                     style={styles.logo_img}
                 />
                 <View style={styles.user_view}>
-                    <Text
-                        style={[styles.username_txt, { color: colors.subFontcolor }]} >
-                        Hello User
-                    </Text>
+                   {userData && userData.fullName ? (
+                                           <View style={{
+                                               alignSelf: 'flex-end',
+                                               alignItems: 'flex-end',
+                                               maxWidth: '75%',
+                                           }}>
+                                               <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
+                                               <Text
+                                                   numberOfLines={1}
+                                                   style={{
+                                                       fontFamily: FONTS.Inter.medium,
+                                                       fontSize: moderateScale(17),
+                                                       color: colors.subFontcolor,
+                                                       textAlign: 'right',
+                                                   }}>
+                                                   {username}
+                                               </Text>
+                                           </View>
+                                       ) : (
+                                           <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                                       )}
                     <TouchableOpacity
                         onPress={() => {
                             if (!login_status && guest_status) {
@@ -71,12 +94,14 @@ const SearchHeader = ({ userdata }) => {
                             }
                         }}
                         style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }} >
-                        <Icon name={"user"} type={"FontAwesome"} size={26} />
+                        <Icon name={"user"} type={"FontAwesome"} size={22} />
                     </TouchableOpacity>
                 </View>
             </View>
             <View style={styles.heading_view}>
-                <View>
+                <View style={{
+                    width: width - moderateScale(110)
+                }}>
                     {userdata && userdata[0]?.name && (
                         <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>
                             {userdata[0]?.name}
@@ -90,11 +115,23 @@ const SearchHeader = ({ userdata }) => {
                     )}
 
                     {userdata && userdata[0]?.addresses?.[0]?.fullAddress && (
-                        <Text
-                            style={[styles.subheading_txt, { color: colors.subFontcolor, marginTop: 7 }]}>
-                            {renderBlurredText(userdata[0]?.addresses[0]?.fullAddress)}
-                        </Text>
+                        <View >
+                            <Text style={[styles.dbomain_txt, { color: colors.subFontcolor }]}>Current Address : </Text>
+                            <Text
+                                style={[styles.subheading_txt, { color: colors.subFontcolor, marginTop: 7 }]}>
+                                {renderBlurredText(userdata[0]?.addresses[0]?.fullAddress)}
+                            </Text>
+                        </View>
                     )}
+
+                    <View style={styles.dob_view}>
+                        <Text style={[styles.death_txt, { color: colors.subFontcolor }]}>
+                            Death Records :{' '}
+                        </Text>
+                        <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
+                            {userdata[0]?.deathRecords?.isDeceased ?? userdata[0]?.deathRecord ?? "No"}
+                        </Text>
+                    </View>
                 </View>
                 <View>
                     {userdata && userdata[0]?.age && (
@@ -103,51 +140,52 @@ const SearchHeader = ({ userdata }) => {
                         </Text>
                     )}
                     {userdata && userdata[0]?.dob && (
-                        <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
-                            {userdata[0]?.dob}
-                        </Text>
+                        <View style={styles.dob_view}>
+                            <Text style={[styles.dbomain_txt, { color: colors.subFontcolor }]}>DOB : </Text>
+                            <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
+                                {userdata[0]?.dob}
+                            </Text>
+                        </View>
                     )}
-                    <View>
-                        <Text style={[styles.death_txt, { color: colors.subFontcolor }]}>
-                            Death Records
-                        </Text>
 
-                        <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
-                            {userdata[0]?.deathRecords?.isDeceased ?? userdata[0]?.deathRecord ?? "No"}
-                        </Text>
-                    </View>
+
+                    {userdata && userdata[0]?.addresses?.[0]?.firstReportedDate && (
+                        <View>
+                            <Text style={[styles.dbomain_txt, { color: colors.subFontcolor }]}>First Recorded</Text>
+                            <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
+                                {userdata[0]?.addresses[0]?.firstReportedDate}
+                            </Text>
+                        </View>
+                    )}
+                    {userdata && userdata[0]?.addresses?.[0]?.lastReportedDate && (
+                        <View>
+                            <Text style={[styles.dbomain_txt, { color: colors.subFontcolor }]}>Last Recorded</Text>
+                            <Text style={[styles.dbo_txt, { color: colors.subFontcolor }]}>
+                                {userdata[0]?.addresses[0]?.lastReportedDate}
+                            </Text>
+                        </View>
+                    )}
+
                 </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 };
 
 export default SearchHeader;
-
-// Define your styles
+// define your styles
 const styles = StyleSheet.create({
-    Container: {
-        flex: 1,
-    },
-    header_bg_img: {
-        height: moderateScale(260),
-        width: moderateScale(420),
-        resizeMode: 'cover',
-    },
-    img_position: {
-        position: 'absolute',
-        top: moderateScale(30),
-    },
     logo_view: {
         paddingHorizontal: moderateScale(3),
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingTop: moderateScale(24),
         alignItems: 'center',
+        marginRight: moderateScale(20)
     },
     logo_img: {
-        height: moderateScale(65),
-        width: moderateScale(65),
+        height: moderateScale(55),
+        width: moderateScale(55),
         resizeMode: 'contain',
     },
     user_view: {
@@ -158,32 +196,27 @@ const styles = StyleSheet.create({
     user_circle: {
         alignItems: 'center',
         justifyContent: 'center',
-        height: moderateScale(40),
-        width: moderateScale(40),
+        height: moderateScale(38),
+        width: moderateScale(38),
         borderRadius: moderateScale(23),
         marginLeft: moderateScale(10),
     },
-    time_txt: {
-        fontSize: moderateScale(13),
-        fontFamily: FONTS.Inter.light,
-    },
     username_txt: {
-        fontSize: moderateScale(22),
+        fontSize: moderateScale(18),
         fontFamily: FONTS.Inter.bold,
     },
     heading_view: {
-        marginTop: moderateScale(7),
         paddingHorizontal: moderateScale(3),
         flexDirection: 'row',
     },
     heading_txt: {
-        fontSize: moderateScale(22),
+        fontSize: moderateScale(19),
         fontFamily: FONTS.Inter.bold,
     },
     subheading_txt: {
         fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.light,
-        maxWidth: '65%',
+        maxWidth: '72%',
     },
     subheadingemail_txt: {
         fontSize: moderateScale(12),
@@ -193,9 +226,17 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.light,
     },
-    death_txt: {
-        fontSize: moderateScale(14),
+    dbomain_txt: {
+        fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.semibold,
-        marginTop: moderateScale(5),
+    },
+    death_txt: {
+        fontSize: moderateScale(13),
+        fontFamily: FONTS.Inter.semibold,
+    },
+    dob_view: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: moderateScale(3)
     }
 });

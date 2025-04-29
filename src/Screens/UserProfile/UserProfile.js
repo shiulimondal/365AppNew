@@ -22,17 +22,7 @@ const { width, height } = Dimensions.get('screen');
 
 const UserProfile = () => {
     const { colors } = useTheme();
-    const { login_status, guest_status,userData } = useSelector(state => state.User);
-
-    console.log('---------------------------- Thia is Use profile----------------------------');
-    console.log('---------------------------- true userrrrrrrrrrrrrrrrrr',userData);
-
-    console.log('---------------------------- true guest_status',guest_status);
-    console.log('---------------------------- true login_status',login_status);
-
-    const [name,setName] = useState(userData?.fullName)
-    const [email,setEmail] = useState(userData?.email)
-
+    const { login_status, guest_status } = useSelector(state => state.User);
     const navigation = useNavigation();
     const viewOffset = useRef(new Animated.Value(0)).current;
     useEffect(() => {
@@ -102,7 +92,6 @@ const UserProfile = () => {
                                             color: colors.tintText,
                                             size: 18
                                         }}
-                                        value={name}
                                     />
 
                                     <CustomInput
@@ -116,7 +105,7 @@ const UserProfile = () => {
                                             color: colors.tintText,
                                             size: 18
                                         }}
-                                        value={email}
+
                                     />
 
 
