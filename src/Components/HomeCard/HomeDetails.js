@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
+import { dataDetails } from '../../Constants/options';
 
 const { width, height } = Dimensions.get('window');
 
-const HomeDetails = ({ homeData }) => {
-    //   console.log('homeData---------------------------------', homeData);
+const HomeDetails = () => {;
     const { colors } = useTheme();
 
     return (
@@ -39,7 +39,7 @@ const HomeDetails = ({ homeData }) => {
                     Utilizing Public Information such as:
                 </Text>
             </View>
-            {homeData.map((item, index) => {
+            {dataDetails.map((item, index) => {
                 return (
                     <View
                         key={index}

@@ -18,49 +18,6 @@ const { width, height } = Dimensions.get('window');
 const Home = () => {
     const { colors } = useTheme();
 
-    const dataDetailos = [
-        {
-            icon: require('../../assets/images/report.png'),
-            Dtitle: 'Arrest Reports',
-            subTitle: 'Discover if individuals have ever been arrested through our comprehensive public records search.',
-        },
-        {
-            icon: require('../../assets/images/traffic.png'),
-            Dtitle: 'Traffic Reports',
-            subTitle: 'Access information on collisions, traffic violations, DUIs, and speeding tickets for individuals under scrutiny.',
-        },
-        {
-            icon: require('../../assets/images/civil.png'),
-            Dtitle: 'Civil Records',
-            subTitle: "Examine non-criminal court cases, such as child custody disputes, personal injury claims, or restraining orders, to gain insights into individuals' legal interactions.",
-        },
-
-        {
-            icon: require('../../assets/images/lawsuits.png'),
-            Dtitle: 'Lawsuits',
-            subTitle: 'Public records encompass filed lawsuits and legal actions involving individuals, providing insight into their legal history.',
-        },
-        {
-            icon: require('../../assets/images/liens.png'),
-            Dtitle: 'Liens',
-            subTitle: 'When individuals fail to pay their debts, their property may be temporarily seized through a lien until the debts are resolved. This information is essential for understanding financial responsibility.',
-        },
-        {
-            icon: require('../../assets/images/phoneli.png'),
-            Dtitle: 'Phone Listings',
-            subTitle: 'Our online public records search makes it easy to locate individuals by name or phone number, eliminating the need for outdated phone book searches.',
-        },
-        {
-            icon: require('../../assets/images/criminal-database.png'),
-            Dtitle: 'Criminal Records',
-            subTitle: 'Reveal convictions and charges against individuals to help make informed decisions about personal and professional interactions.',
-        },
-        {
-            icon: require('../../assets/images/bankrupt.png'),
-            Dtitle: 'Bankruptciess',
-            subTitle: 'Bankruptcies are crucial for business partnerships and relationships, as this information discloses past financial difficulties and promotes transparency.',
-        },
-    ];
 
     const viewOffset = useRef(new Animated.Value(0)).current;
 
@@ -101,7 +58,7 @@ const Home = () => {
                             opacity,
                         },
                     ]}>
-                    <HomeDetails homeData={dataDetailos} />
+                    <HomeDetails  />
                 </Animated.View>
             </ScrollView>
         </View>
