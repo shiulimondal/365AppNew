@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet, TextInput, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet, TextInput, Dimensions, useWindowDimensions } from 'react-native';
 import Icon from './Icon';
 import { FONTS } from '../Constants/Fonts';
 import { moderateScale } from '../Constants/PixelRatio';
@@ -7,6 +7,7 @@ import { moderateScale } from '../Constants/PixelRatio';
 const { height, width } = Dimensions.get('screen');
 const CustomPicker = ({ label, options, selectedValue, onValueChange, labelKey = "name", valueKey = "value", placeholder = "Select" }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const { width, height } = useWindowDimensions();
 
     const handleOptionPress = (value) => {
         onValueChange(value);
@@ -17,7 +18,10 @@ const CustomPicker = ({ label, options, selectedValue, onValueChange, labelKey =
         <View style={styles.container}>
             <Text style={styles.label}>{label}</Text>
             <TouchableOpacity
-                style={styles.pickerContainer}
+                style={{
+                    ...styles.pickerContainer,
+                    width: width * 0.45
+                }}
                 onPress={() => setModalVisible(true)}
             >
                 <Text style={styles.pickerText}>
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
         marginTop: -20
     },
     label: {
-        fontSize: 16,
+        fontSize: moderateScale(16),
         color: '#000'
     },
     pickerContainer: {
@@ -68,16 +72,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         borderColor: 'rgba(240, 240, 240, 1)',
-        padding: 10,
+        padding: moderateScale(10),
         backgroundColor: 'rgba(250, 250, 250, 1)',
-        borderRadius: 10,
-        borderWidth: 1,
-        marginTop: 7,
-        width: 160,
-        height: 48
+        borderRadius: moderateScale(10),
+        borderWidth: moderateScale(1),
+        marginTop: moderateScale(7),
+        height: moderateScale(48)
     },
     pickerText: {
-        fontSize: 14,
+        fontSize: moderateScale(14),
         fontFamily: FONTS.Inter.regular,
         color: '#000'
     },

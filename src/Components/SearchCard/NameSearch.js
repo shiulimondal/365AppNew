@@ -94,9 +94,7 @@ const NameSearch = ({ item, index }) => {
 export default NameSearch;
 // define your styles
 const styles = StyleSheet.create({
-    Container: {
 
-    },
     card_top: {
         borderTopRightRadius: moderateScale(15),
         borderTopLeftRadius: moderateScale(15),

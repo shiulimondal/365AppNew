@@ -64,27 +64,29 @@ const SearchHeader = ({ userdata }) => {
                     style={styles.logo_img}
                 />
                 <View style={styles.user_view}>
-                   {userData && userData.fullName ? (
-                                           <View style={{
-                                               alignSelf: 'flex-end',
-                                               alignItems: 'flex-end',
-                                               maxWidth: '75%',
-                                           }}>
-                                               <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
-                                               <Text
-                                                   numberOfLines={1}
-                                                   style={{
-                                                       fontFamily: FONTS.Inter.medium,
-                                                       fontSize: moderateScale(17),
-                                                       color: colors.subFontcolor,
-                                                       textAlign: 'right',
-                                                   }}>
-                                                   {username}
-                                               </Text>
-                                           </View>
-                                       ) : (
-                                           <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
-                                       )}
+                    {userData && userData.fullName ? (
+                        <View style={{
+                            alignSelf: 'flex-end',
+                            alignItems: 'flex-end',
+                            maxWidth: '75%',
+                        }}>
+                            <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
+                            <Text
+                                numberOfLines={1}
+                                style={{
+                                    fontFamily: FONTS.Inter.medium,
+                                    fontSize: moderateScale(14),
+                                    color: colors.subFontcolor,
+                                    textAlign: 'right',
+                                    marginTop: moderateScale(-6)
+                                }}>
+                                {username}
+                            </Text>
+                        </View>
+                    ) : (
+                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                    )}
+
                     <TouchableOpacity
                         onPress={() => {
                             if (!login_status && guest_status) {
@@ -93,8 +95,8 @@ const SearchHeader = ({ userdata }) => {
                                 null
                             }
                         }}
-                        style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }} >
-                        <Icon name={"user"} type={"FontAwesome"} size={22} />
+                        style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }}>
+                        <Icon name={"user"} type={"FontAwesome"} size={26} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -176,12 +178,11 @@ export default SearchHeader;
 // define your styles
 const styles = StyleSheet.create({
     logo_view: {
-        paddingHorizontal: moderateScale(3),
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingTop: moderateScale(24),
         alignItems: 'center',
-        marginRight: moderateScale(20)
+        marginRight: moderateScale(20),
     },
     logo_img: {
         height: moderateScale(55),

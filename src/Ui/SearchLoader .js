@@ -11,14 +11,12 @@ const SearchLoader = () => {
             <View style={{
                 backgroundColor: 'rgba(10, 104, 201, 1)',
                 paddingHorizontal: moderateScale(20),
-                borderBottomLeftRadius: moderateScale(20),
-                borderBottomRightRadius: moderateScale(20),
-                height: moderateScale(210),
+                height: moderateScale(260),
                 paddingTop: moderateScale(40)
             }}>
                 <View style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
                 }}>
                     <ShimmerPlaceholder
                         shimmerColors={['#BCC0C2', '#E1E7EB', '#BCC0C2']}
@@ -89,7 +87,13 @@ const SearchLoader = () => {
             </View>
 
             {/* Sections */}
-            <View style={{ padding: moderateScale(15), marginTop: moderateScale(20) }}>
+            <View style={{
+                padding: moderateScale(15),
+                marginTop: moderateScale(-20),
+                backgroundColor: '#f0f0f0',
+                borderTopRightRadius: moderateScale(20),
+                borderTopLeftRadius: moderateScale(20)
+            }}>
 
                 {[...Array(9)].map((_, i) => (
                     <ShimmerPlaceholder

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
 
@@ -20,6 +20,9 @@ const PlanCardItem = ({ item, index, CARD_WIDTH, scrollX, colors, setPlanModal, 
     });
 
     return (
+        // <ScrollView contentContainerStyle={{
+        //     paddingBottom: moderateScale(30),
+        // }}>
         <Animated.View style={[
             styles.plan_card,
             {
@@ -74,6 +77,8 @@ const PlanCardItem = ({ item, index, CARD_WIDTH, scrollX, colors, setPlanModal, 
                 </Text>
             </TouchableOpacity>
         </Animated.View>
+
+        // </ScrollView>
     );
 };
 

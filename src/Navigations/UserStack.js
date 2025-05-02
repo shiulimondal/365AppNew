@@ -8,6 +8,9 @@ import SignUp from '../Screens/Auth/SignUp';
 import Email from '../Screens/Auth/Email';
 import PasswordRecover from '../Screens/Auth/PasswordRecover';
 import Splash from '../Screens/Auth/Splash';
+import EditProfile from '../Screens/UserProfile/EditProfile';
+import History from '../Screens/UserProfile/History';
+import LearnMore from '../Screens/Home/LearnMore';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +31,10 @@ const UserStack = () => {
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="Email" component={Email} />
             <Stack.Screen name="PasswordRecover" component={PasswordRecover} />
+
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="History" component={History} />
+            <Stack.Screen name="LearnMore" component={LearnMore} />
         </Stack.Navigator>
     );
 };

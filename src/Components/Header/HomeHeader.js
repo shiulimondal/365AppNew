@@ -39,27 +39,28 @@ const HomeHeader = ({ title = '' }) => {
                     style={styles.logo_img}
                 />
                 <View style={styles.user_view}>
-                   {userData && userData.fullName ? (
-                                           <View style={{
-                                               alignSelf: 'flex-end',
-                                               alignItems: 'flex-end',
-                                               maxWidth: '75%',
-                                           }}>
-                                               <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
-                                               <Text
-                                                   numberOfLines={1}
-                                                   style={{
-                                                       fontFamily: FONTS.Inter.medium,
-                                                       fontSize: moderateScale(17),
-                                                       color: colors.subFontcolor,
-                                                       textAlign: 'right',
-                                                   }}>
-                                                   {username}
-                                               </Text>
-                                           </View>
-                                       ) : (
-                                           <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
-                                       )}
+                    {userData && userData.fullName ? (
+                        <View style={{
+                            alignSelf: 'flex-end',
+                            alignItems: 'flex-end',
+                            maxWidth: '75%',
+                        }}>
+                            <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
+                            <Text
+                                numberOfLines={1}
+                                style={{
+                                    fontFamily: FONTS.Inter.medium,
+                                    fontSize: moderateScale(14),
+                                    color: colors.subFontcolor,
+                                    textAlign: 'right',
+                                    marginTop: moderateScale(-6)
+                                }}>
+                                {username}
+                            </Text>
+                        </View>
+                    ) : (
+                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                    )}
 
                     <TouchableOpacity
                         onPress={() => {
@@ -120,9 +121,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: moderateScale(10),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(22),
+        paddingTop: moderateScale(24),
         alignItems: 'center',
-        marginRight: moderateScale(10)
+        marginRight: moderateScale(10),
+        marginHorizontal: 0
     },
     logo_img: {
         height: moderateScale(55),
@@ -133,6 +135,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingRight: moderateScale(2)
     },
     user_circle: {
         alignItems: 'center',

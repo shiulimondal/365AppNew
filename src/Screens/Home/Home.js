@@ -58,7 +58,7 @@ const Home = () => {
                             opacity,
                         },
                     ]}>
-                    <HomeDetails  />
+                    <HomeDetails />
                 </Animated.View>
             </ScrollView>
         </View>
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     tabView: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // paddingTop: moderateScale(7),
         borderTopRightRadius: moderateScale(30),
         borderTopLeftRadius: moderateScale(30),
         marginTop: moderateScale(-20),

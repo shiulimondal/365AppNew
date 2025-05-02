@@ -9,6 +9,8 @@ import LoadingSpinner from '../../../Ui/LoadingSpinner';
 
 const { width, height } = Dimensions.get('screen');
 const AliasesCard = ({ aliasesData }) => {
+    console.log('===============aliasesData==========', aliasesData)
+
     const { colors } = useTheme();
     const [showContent, setShowContent] = useState(false);
     const [showHiddenCard, setShowHiddenCard] = useState(false);
@@ -37,7 +39,7 @@ const AliasesCard = ({ aliasesData }) => {
         <View>
             <TouchableOpacity onPress={toggleCard} style={styles.hide_view}>
                 <View style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Aliases: </Text>
+                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Aliases: ({aliasesData?.length})</Text>
 
 
                 </View>
@@ -97,12 +99,12 @@ const styles = StyleSheet.create({
         borderRadius: moderateScale(7),
         paddingBottom: moderateScale(15),
         marginTop: moderateScale(3),
-        marginBottom:moderateScale(15)
+        marginBottom: moderateScale(15)
     },
 
     aliasText: {
         fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.medium,
     },
-  
+
 })

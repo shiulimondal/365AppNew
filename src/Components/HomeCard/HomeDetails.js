@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
 import { dataDetails } from '../../Constants/options';
+import NavigationService from '../../Services/Navigation';
 
 const { width, height } = Dimensions.get('window');
 
-const HomeDetails = () => {;
+const HomeDetails = () => {
+    ;
     const { colors } = useTheme();
 
     return (
@@ -20,7 +22,8 @@ const HomeDetails = () => {;
                     At 365 Instant Check, we prioritize simplicity and protect your search
                     history with complete confidentiality.
                 </Text>
-                <View
+                <TouchableOpacity
+                    onPress={() => NavigationService.navigate('LearnMore')}
                     style={{
                         ...styles.stylesseatrch_view,
                         backgroundColor: colors.buttonColor,
@@ -28,7 +31,7 @@ const HomeDetails = () => {;
                     <Text style={[styles.search_txt, { color: colors.subFontcolor }]}>
                         Learn more
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.main_view}>

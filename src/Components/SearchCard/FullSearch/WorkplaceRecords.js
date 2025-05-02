@@ -5,11 +5,13 @@ import { FONTS } from '../../../Constants/Fonts'
 import Icon from '../../../Ui/Icon'
 import { useTheme } from '../../../../ThemeContext'
 import LoadingSpinner from '../../../Ui/LoadingSpinner'
+import Tooltip from 'react-native-walkthrough-tooltip';
 
 const WorkplaceRecords = ({ workplaceRecords, openLock }) => {
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const [showContent, setShowContent] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         if (showHiddenCard) {
@@ -60,20 +62,56 @@ const WorkplaceRecords = ({ workplaceRecords, openLock }) => {
 
     return (
         <View>
-            
+
 
             {typeof normalworkplaceRecords === 'string' ? (
                 // Show only this when it's a string
-                <TouchableOpacity onPress={toggleCard} style={styles.hide_view}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Workplace Records:</Text>
-                        <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
-                    </View>
-                </TouchableOpacity>
+                <View>
+                    <Tooltip
+                        isVisible={showTooltip}
+                        content={
+                            <View style={{
+                                minWidth: 250,
+                                maxWidth: 300,
+                                padding: 5,
+                            }}>
+                                {
+                                    !openLock ?
+                                        <Text style={{ ...styles.showMessage_txt, color: colors.secondaryFontColor }}>
+                                            These details, if available, would be unlocked with a Premium Report.
+                                        </Text>
+                                        :
+                                        <Text style={{ ...styles.showMessage_txt, color: colors.secondaryFontColor }}>
+                                            {normalworkplaceRecords}
+                                        </Text>
+                                }
+
+                            </View>
+                        }
+                        placement="top"
+                        onClose={() => setShowTooltip(false)}
+                        backgroundColor="rgba(0,0,0,0.5)"
+                        displayInsets={{ top: 15, bottom: 15, left: 10, right: 10 }}
+                    >
+                        {!showTooltip && (
+                            <TouchableOpacity onPress={() => setShowTooltip(true)} style={styles.touchable}>
+                                <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Workplace Records:</Text>
+                                <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
+                            </TouchableOpacity>
+                        )}
+                    </Tooltip>
+
+                    {showTooltip && (
+                        <TouchableOpacity onPress={() => setShowTooltip(true)} style={styles.touchable}>
+                            <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Workplace Records:</Text>
+                            <Icon name={"infocirlceo"} type={"AntDesign"} size={17} color={colors.buttonColor} />
+                        </TouchableOpacity>
+                    )}
+                </View>
             ) : (
                 <View style={styles.hide_view}>
                     <TouchableOpacity onPress={toggleCard} style={styles.lockview}>
-                    <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Workplace Records: ({workplaceRecords?.length})</Text>
+                        <Text style={{ ...styles.phone_number, color: colors.secondaryFontColor }}>Workplace Records: ({workplaceRecords?.length})</Text>
                         {openLock ? (
                             <Icon name={"lock-open"} type={"SimpleLineIcons"} size={18} />
                         ) : (
@@ -236,4 +274,17 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.regular,
     },
+    touchable: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: moderateScale(10),
+        backgroundColor: '#f0f0f0',
+        borderRadius: moderateScale(4),
+    },
+    showMessage_txt: {
+        fontSize: moderateScale(14),
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        fontFamily: FONTS.Inter.regular,
+    }
 })

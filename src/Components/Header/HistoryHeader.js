@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 
-const CommonHeader = ({ title = '' }) => {
+const HistoryHeader = ({ title = '' }) => {
     const { login_status, guest_status, userData } = useSelector(state => state.User);
     const navigation = useNavigation();
     const { colors } = useTheme();
@@ -45,7 +45,7 @@ const CommonHeader = ({ title = '' }) => {
                                 numberOfLines={1}
                                 style={{
                                     fontFamily: FONTS.Inter.medium,
-                                    fontSize: moderateScale(14),
+                                    fontSize: moderateScale(17),
                                     color: colors.subFontcolor,
                                     textAlign: 'right',
                                     marginTop: moderateScale(-6)
@@ -71,10 +71,9 @@ const CommonHeader = ({ title = '' }) => {
                 </View>
             </View>
             <View style={styles.heading_view}>
-                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>People</Text>
-                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Search Service</Text>
+                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Recent Purchases</Text>
                 <Text style={[styles.subheading_txt, { color: colors.subFontcolor }]}>
-                    Find Email Addresses, Phone Numbers, Contact Information and More!
+                    View your purchase history, available for up to 14 days. Track your orders and manage your purchases easily!
                 </Text>
             </View>
 
@@ -82,11 +81,12 @@ const CommonHeader = ({ title = '' }) => {
     );
 };
 
-export default CommonHeader;
+export default HistoryHeader;
 // define your styles
 const styles = StyleSheet.create({
+
     logo_view: {
-        paddingLeft: moderateScale(17),
+        paddingLeft: moderateScale(5),
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingTop: moderateScale(24),
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
     user_view: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginHorizontal: 0,
-        paddingRight: moderateScale(5)
+        justifyContent: 'center',
+        marginRight: moderateScale(17)
     },
     user_circle: {
         alignItems: 'center',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     },
     heading_view: {
         marginTop: moderateScale(7),
-        paddingHorizontal: moderateScale(15),
+        paddingHorizontal: moderateScale(7),
     },
     heading_txt: {
         fontSize: moderateScale(22),

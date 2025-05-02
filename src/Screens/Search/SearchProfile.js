@@ -219,6 +219,10 @@ const SearchProfile = () => {
                                     <Address openLock={openLock} addressData={addressData} />
                                 )}
 
+                                {associatesRecords !== undefined && (
+                                    <Relatives openLock={openLock} associatesRecords={associatesRecords} />
+                                )}
+
                                 {criminalRecords !== undefined && (
                                     <CreminalRecords openLock={openLock} criminalRecords={criminalRecords} />
                                 )}
@@ -251,9 +255,7 @@ const SearchProfile = () => {
                                     <DomainRecords openLock={openLock} domainRecords={domainRecords} />
                                 )}
 
-                                {associatesRecords !== undefined && (
-                                    <Relatives openLock={openLock} associatesRecords={associatesRecords} />
-                                )}
+
                             </View>
                         </Animated.View>
                     </ScrollView>
@@ -263,12 +265,14 @@ const SearchProfile = () => {
                         visible={isplanModal}
                         onRequestClose={() => setPlanModal(false)}>
                         <View style={styles.modalView}>
-                            <BasicPlanCard
-                                setPlanModal={setPlanModal}
-                                setPaymentModal={setPaymentModal}
-                                setPrice={setPrice}
-                                setPlanName={setPlanName}
-                            />
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                <BasicPlanCard
+                                    setPlanModal={setPlanModal}
+                                    setPaymentModal={setPaymentModal}
+                                    setPrice={setPrice}
+                                    setPlanName={setPlanName}
+                                />
+                            </ScrollView>
                         </View>
                     </Modal>
 

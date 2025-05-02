@@ -23,7 +23,6 @@ const ProfileHeader = ({ title = '' }) => {
             if (userData.fullName) {
                 setUserName(userData.fullName);
             }
-
         }
     }, [userData]);
 
@@ -35,6 +34,7 @@ const ProfileHeader = ({ title = '' }) => {
 
             <View style={styles.logo_view}>
                 <Image source={require('../../assets/images/logo.png')} style={styles.logo_img} />
+
                 <View style={styles.user_view}>
                     {userData && userData.fullName ? (
                         <View style={{
@@ -47,9 +47,10 @@ const ProfileHeader = ({ title = '' }) => {
                                 numberOfLines={1}
                                 style={{
                                     fontFamily: FONTS.Inter.medium,
-                                    fontSize: moderateScale(17),
+                                    fontSize: moderateScale(14),
                                     color: colors.subFontcolor,
                                     textAlign: 'right',
+                                    marginTop: moderateScale(-6)
                                 }}>
                                 {username}
                             </Text>
@@ -57,6 +58,7 @@ const ProfileHeader = ({ title = '' }) => {
                     ) : (
                         <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
                     )}
+
                     <TouchableOpacity
                         onPress={() => {
                             if (!login_status && guest_status) {
@@ -74,7 +76,7 @@ const ProfileHeader = ({ title = '' }) => {
                 <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Profile Information</Text>
 
                 <Text style={[styles.subheading_txt, { color: colors.subFontcolor }]}>
-                    Let’s get to know you better. Your details stay private.
+                    We’d love to learn more about you to personalize your experience. Rest assured, your information will remain completely private and secure with us.
                 </Text>
             </View>
         </ImageBackground>
@@ -85,12 +87,12 @@ export default ProfileHeader;
 // define your styles
 const styles = StyleSheet.create({
     logo_view: {
-        paddingHorizontal: moderateScale(10),
+        paddingLeft: moderateScale(7),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(22),
+        paddingTop: moderateScale(24),
         alignItems: 'center',
-        marginRight: moderateScale(10)
+        marginHorizontal: 0,
     },
     logo_img: {
         height: moderateScale(55),
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingRight: moderateScale(25)
     },
     user_circle: {
         alignItems: 'center',
@@ -115,8 +118,8 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.Inter.bold,
     },
     heading_view: {
-        marginTop: moderateScale(7),
-        paddingHorizontal: moderateScale(10),
+        marginTop: moderateScale(12),
+        paddingHorizontal: moderateScale(7),
     },
     heading_txt: {
         fontSize: moderateScale(22),

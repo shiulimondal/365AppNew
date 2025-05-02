@@ -116,7 +116,7 @@ export const planData = [
     {
         title: 'Basic',
         price: '11.95',
-        popular: true,
+        popular: false,
         features: [
             { name: 'Name and aliases', available: true },
             { name: 'Age and DOB', available: true },
@@ -137,7 +137,7 @@ export const planData = [
     {
         title: 'Standard',
         price: '14.95',
-        popular: false,
+        popular: true,
         features: [
             { name: 'Name and aliases', available: true },
             { name: 'Age and DOB', available: true },
@@ -209,3 +209,33 @@ export const accountType = [
     { name: 'Business', id: 'Business' },
 ];
 
+export const Learnmore = [
+    {
+        title: 'Streamlined Search Process',
+        sub: "At 365 Instant Check, we prioritize ease and efficiency. To start a search, simply enter the person's first and last name—nothing else is required. For more common names like John Smith, adding extra details such as their city and state of residence can significantly improve the accuracy of your results. These additional pieces of information help narrow down the search, ensuring that you receive more precise and relevant results."
+    },
+    {
+        title: 'Effortless People Search Made Easy',
+        sub: "Looking for someone but unsure where to start? Whether you need information about yourself or someone else, navigating public records can be overwhelming. At 365 Instant Check, we simplify the process, turning complex searches into quick, straightforward tasks. Our advanced people search is designed to be fast and hassle-free, so you can find what you need without the frustration."
+    },
+    {
+        title: 'Secure Your Peace of Mind with 365 Instant Check',
+        sub: "In a world where safety and peace of mind are crucial, our online people finder is a trusted tool for thousands. Whether you're reconnecting with an old friend, finding a relative, or vetting a potential roommate or date, our criminal record checks provide reassurance of a clean background. Our advanced algorithms also ensure secure transactions by verifying the identities of buyers and sellers, helping you avoid costly mistakes.While many people search services fall short, 365 Instant Check excels. We offer reliable, accurate results without the hassle or high costs often associated with public records. Say goodbye to sifting through phone books, visiting courthouses, or endless online searches. Our intuitive platform provides a comprehensive solution, making it easy to find anyone with just a few clicks."
+    }
+
+];
+
+export const reports = [
+    { name: 'Full Names' },
+    { name: 'Phone Numbers' },
+    { name: 'Current and Prior Addresses' },
+    { name: 'E-mail Addresses' },
+    { name: 'Aliases' },
+    { name: 'Criminal Records' },
+    { name: 'Sexual Offender Records' },
+    { name: 'Traffic Records' },
+    { name: 'Business Records' },
+    { name: 'Workplace Records' },
+    { name: 'Foreclosure Records' },
+    { name: ' Relatives & Associates' },
+];

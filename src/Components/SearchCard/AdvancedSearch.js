@@ -10,13 +10,11 @@ import Toast from 'react-native-simple-toast';
 import { ageOptions, stateOptions } from '../../Constants/options';
 import ShimmerLoader from '../../Ui/ShimmerLoader';
 
-const { width, height } = Dimensions.get('window');
 
 const AdvancedSearch = () => {
     const { colors } = useTheme();
 
-    const { widthLong, height } = useWindowDimensions();
-
+    const { width, height } = useWindowDimensions();
     const [selectedAge, setSelectedAge] = useState('');
     const [selecteState, setSelectedState] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -27,7 +25,6 @@ const AdvancedSearch = () => {
     const [advEmail, setAdvEmail] = useState('');
     const [relativeName, setRelativeName] = useState('');
     const [errors, setErrors] = useState({});
-    const [dataCache, setDataCache] = useState({})
     const [loading, setLoading] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [listMessage, setListMessage] = useState('');
@@ -135,8 +132,6 @@ const AdvancedSearch = () => {
                 handleAdvSearch(page);
             }
         };
-
-
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 15 }}>
                 <TouchableOpacity
@@ -165,11 +160,18 @@ const AdvancedSearch = () => {
     };
 
     return (
-        <View style={{
-            // width:widthLong,
-        }}>
+        <View >
             {loading ? (
-                <View style={styles.loder_view}>
+                <View
+                    style={{
+                        marginTop: moderateScale(35),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flex: 1,
+                        marginHorizontal: 0,
+                        width: width - moderateScale(15),
+                    }}
+                >
                     <ShimmerLoader />
                 </View>
             ) : searchResult?.length >= 1 ? (
@@ -199,144 +201,148 @@ const AdvancedSearch = () => {
                     borderBottomRightRadius: moderateScale(25),
                     borderBottomLeftRadius: moderateScale(25),
                     elevation: 1,
-                    width:widthLong
+                    width: width - moderateScale(15),
+                    paddingHorizontal: moderateScale(10),
+                    paddingTop: moderateScale(40)
                 }}>
-                    <View style={styles.Container}>
 
-                        <Text style={{ ...styles.userFname, color: colors.primaryFontColor }}>First Name</Text>
-                        <TextInput
-                            style={{
-                                ...styles.fullInput,
-                                backgroundColor: colors.inputBox,
-                                borderColor: colors.inputBorder
-                            }}
-                            value={firstName}
-                            onChangeText={(val) => setFirstName(val)}
-                        />
-                        {errors.firstName && (
-                            <Text style={styles.error_message}>{errors.firstName}</Text>
-                        )}
-                        <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Last Name</Text>
-                        <TextInput
-                            style={{
-                                ...styles.fullInput,
-                                backgroundColor: colors.inputBox,
-                                borderColor: colors.inputBorder
-                            }}
-                            value={lastName}
-                            onChangeText={(val) => setlastName(val)}
-                        />
-                        {errors.lastName && (
-                            <Text style={styles.error_message}>{errors.lastName}</Text>
-                        )}
-                        <View style={styles.cityState_view}>
-                            <View>
-                                <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>City</Text>
-                                <TextInput
-                                    style={{
-                                        ...styles.halfInput,
-                                        backgroundColor: colors.inputBox,
-                                        borderColor: colors.inputBorder
-                                    }}
-                                    value={city}
-                                    onChangeText={(val) => setCity(val)}
-                                />
-                                {errors.city && (
-                                    <Text style={styles.error_message}>{errors.city}</Text>
-                                )}
-                            </View>
-                            <View>
-                                <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>State</Text>
-                                <CustomPicker
-                                    labelKey="name"
-                                    valueKey="id"
-                                    placeholder="Select State"
-                                    options={stateOptions}
-                                    selectedValue={selecteState}
-                                    onValueChange={(val) => setSelectedState(val)}
-                                    textStyle={{
-                                        fontSize: moderateScale(13),
-                                        fontFamily: FONTS.Inter.regular,
-                                    }}
-                                />
-                                {errors.selecteState && (
-                                    <Text style={styles.error_message}>{errors.selecteState}</Text>
-                                )}
-                            </View>
+
+                    <Text style={{ ...styles.userFname, color: colors.primaryFontColor }}>First Name</Text>
+                    <TextInput
+                        style={{
+                            ...styles.fullInput,
+                            backgroundColor: colors.inputBox,
+                            borderColor: colors.inputBorder
+                        }}
+                        value={firstName}
+                        onChangeText={(val) => setFirstName(val)}
+                    />
+                    {errors.firstName && (
+                        <Text style={styles.error_message}>{errors.firstName}</Text>
+                    )}
+                    <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Last Name</Text>
+                    <TextInput
+                        style={{
+                            ...styles.fullInput,
+                            backgroundColor: colors.inputBox,
+                            borderColor: colors.inputBorder
+                        }}
+                        value={lastName}
+                        onChangeText={(val) => setlastName(val)}
+                    />
+                    {errors.lastName && (
+                        <Text style={styles.error_message}>{errors.lastName}</Text>
+                    )}
+                    <View style={{ ...styles.cityState_view }}>
+                        <View>
+                            <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>City</Text>
+                            <TextInput
+                                style={{
+                                    ...styles.halfInput,
+                                    width: width * 0.44,
+                                    backgroundColor: colors.inputBox,
+                                    borderColor: colors.inputBorder
+                                }}
+                                value={city}
+                                onChangeText={(val) => setCity(val)}
+                            />
+                            {errors.city && (
+                                <Text style={styles.error_message}>{errors.city}</Text>
+                            )}
                         </View>
-
-                        <View style={styles.cityState_view}>
-                            <View>
-                                <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Age</Text>
-                                <CustomPicker
-                                    labelKey="name"
-                                    valueKey="id"
-                                    placeholder="Select age"
-                                    options={ageOptions}
-                                    selectedValue={selectedAge}
-                                    onValueChange={(val) => setSelectedAge(val)}
-                                    textStyle={{
-                                        fontSize: moderateScale(13),
-                                        fontFamily: FONTS.Inter.regular,
-                                    }}
-                                />
-                                {errors.selectedAge && (
-                                    <Text style={styles.error_message}>{errors.selectedAge}</Text>
-                                )}
-                            </View>
-                            <View>
-                                <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Phone Number</Text>
-                                <TextInput
-                                    style={{
-                                        ...styles.halfInput,
-                                        backgroundColor: colors.inputBox,
-                                        borderColor: colors.inputBorder
-                                    }}
-                                    maxLength={10}
-                                    keyboardType='number-pad'
-                                    value={advPhone}
-                                    onChangeText={(val) => setAdvPhone(val)}
-                                />
-                                {errors.advPhone && (
-                                    <Text style={styles.error_message}>{errors.advPhone}</Text>
-                                )}
-                            </View>
+                        <View>
+                            <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>State</Text>
+                            <CustomPicker
+                                labelKey="name"
+                                valueKey="id"
+                                placeholder="Select State"
+                                options={stateOptions}
+                                selectedValue={selecteState}
+                                onValueChange={(val) => setSelectedState(val)}
+                                textStyle={{
+                                    fontSize: moderateScale(13),
+                                    fontFamily: FONTS.Inter.regular,
+                                }}
+                            />
+                            {errors.selecteState && (
+                                <Text style={styles.error_message}>{errors.selecteState}</Text>
+                            )}
                         </View>
-
-                        <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Email</Text>
-                        <TextInput
-                            style={{
-                                ...styles.fullInput,
-                                backgroundColor: colors.inputBox,
-                                borderColor: colors.inputBorder
-                            }}
-                            value={advEmail}
-                            onChangeText={(val) => setAdvEmail(val)}
-                        />
-                        {errors.advEmail && (
-                            <Text style={styles.error_message}>{errors.advEmail}</Text>
-                        )}
-
-                        <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Relative Name</Text>
-                        <TextInput
-                            style={{
-                                ...styles.fullInput,
-                                backgroundColor: colors.inputBox,
-                                borderColor: colors.inputBorder
-                            }}
-                            value={relativeName}
-                            onChangeText={(val) => setRelativeName(val)}
-                        />
-                        {errors.relativeName && (
-                            <Text style={styles.error_message}>{errors.relativeName}</Text>
-                        )}
-
-                        <TouchableOpacity
-                            onPress={() => handleAdvSearch()}
-                            style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}    >
-                            <Text style={{ ...styles.button_txt, color: colors.secondaryThemeColor }}>Search</Text>
-                        </TouchableOpacity>
                     </View>
+
+                    <View style={styles.cityState_view}>
+                        <View>
+                            <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Age</Text>
+                            <CustomPicker
+                                labelKey="name"
+                                valueKey="id"
+                                placeholder="Select age"
+                                options={ageOptions}
+                                selectedValue={selectedAge}
+                                onValueChange={(val) => setSelectedAge(val)}
+                                textStyle={{
+                                    fontSize: moderateScale(13),
+                                    fontFamily: FONTS.Inter.regular,
+                                }}
+                            />
+                            {errors.selectedAge && (
+                                <Text style={styles.error_message}>{errors.selectedAge}</Text>
+                            )}
+                        </View>
+                        <View>
+                            <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Phone Number</Text>
+                            <TextInput
+                                style={{
+                                    ...styles.halfInput,
+                                    width: width * 0.44,
+                                    backgroundColor: colors.inputBox,
+                                    borderColor: colors.inputBorder
+                                }}
+                                maxLength={10}
+                                keyboardType='number-pad'
+                                value={advPhone}
+                                onChangeText={(val) => setAdvPhone(val)}
+                            />
+                            {errors.advPhone && (
+                                <Text style={styles.error_message}>{errors.advPhone}</Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Email</Text>
+                    <TextInput
+                        style={{
+                            ...styles.fullInput,
+                            backgroundColor: colors.inputBox,
+                            borderColor: colors.inputBorder
+                        }}
+                        value={advEmail}
+                        onChangeText={(val) => setAdvEmail(val)}
+                    />
+                    {errors.advEmail && (
+                        <Text style={styles.error_message}>{errors.advEmail}</Text>
+                    )}
+
+                    <Text style={{ ...styles.userlastname, color: colors.primaryFontColor }}>Relative Name</Text>
+                    <TextInput
+                        style={{
+                            ...styles.fullInput,
+                            backgroundColor: colors.inputBox,
+                            borderColor: colors.inputBorder
+                        }}
+                        value={relativeName}
+                        onChangeText={(val) => setRelativeName(val)}
+                    />
+                    {errors.relativeName && (
+                        <Text style={styles.error_message}>{errors.relativeName}</Text>
+                    )}
+
+                    <TouchableOpacity
+                        onPress={() => handleAdvSearch()}
+                        style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}    >
+                        <Text style={{ ...styles.button_txt, color: colors.secondaryThemeColor }}>Search</Text>
+                    </TouchableOpacity>
+
                 </View>
             )}
 
@@ -347,15 +353,6 @@ const AdvancedSearch = () => {
 export default AdvancedSearch;
 // define your styles
 const styles = StyleSheet.create({
-    Container: {
-        backgroundColor: '#FFFFFF',
-        width: width - moderateScale(15),
-        marginTop: moderateScale(50),
-        paddingHorizontal: moderateScale(7)
-    },
-    main_card_view: {
-       
-    },
     sec_view: {
         marginTop: moderateScale(50),
         paddingHorizontal: moderateScale(7)
@@ -366,7 +363,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flex: 1,
         marginHorizontal: 0,
-        width: width - moderateScale(15),
     },
     userFname: {
         marginTop: moderateScale(20),
@@ -396,7 +392,6 @@ const styles = StyleSheet.create({
         borderRadius: moderateScale(10),
         borderWidth: 1,
         marginTop: moderateScale(7),
-        width: moderateScale(155)
     },
     cityState_view: {
         flexDirection: 'row',
@@ -415,7 +410,6 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.Inter.regular,
     },
     message_view: {
-        width: width,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: moderateScale(70),

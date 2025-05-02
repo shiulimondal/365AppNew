@@ -23,7 +23,6 @@ import HomeService from '../../Services/HomeServises';
 import Toast from 'react-native-simple-toast';
 import GooglePlacesAutocomplete from '../../Ui/GooglePlacesAutocomplete';
 
-const { width, height } = Dimensions.get('window');
 
 const Search = () => {
     const { width, height } = useWindowDimensions();
@@ -167,10 +166,7 @@ const Search = () => {
     const [dataCache, setDataCache] = useState({})
     const [loading, setLoading] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
-    // console.log('dataCache---------------------------', dataCache);
-    // console.log('searchResult---------------------------', searchResult);
     const [searchAllData, setSearchAllData] = useState({ text: "", type: "" });
-    // console.log('searchAllData------', searchAllData);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [listMessage, setListMessage] = useState('');
@@ -178,7 +174,6 @@ const Search = () => {
     const [formErrors, setFormErrors] = useState({});
 
     const handlePlaceSelect = (data, details = null) => {
-        // console.log('gettadddddddddddddddddddddddddd---------------', data);
         const main = data?.structured_formatting?.main_text || '';
         let secondary = data?.structured_formatting?.secondary_text || '';
         secondary = secondary.replace(/,\s*USA$/, '');
@@ -192,32 +187,24 @@ const Search = () => {
         });
     };
 
-
-
     const validateEmail = (email) => {
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|us|org|edu|gov)$/i;
         return emailRegex.test(email);
     };
-
     const validatePhone = (phone) => {
         const phoneRegex = /^(\+1\s?)?(\(?\d{3}\)?[\s-]?)?\d{3}[\s-]?\d{4}$/;
         return phoneRegex.test(phone);
     };
-
-
     const validateName = (firstName, lastName) => {
         const nameRegex = /^[A-Za-z]+$/;  // Only alphabets
         if (!firstName || !lastName) return false;
         return nameRegex.test(firstName) && nameRegex.test(lastName);
     };
-
     const validateAddress = (address) => {
         return address?.main_text && address?.secondary_text;
     };
-
     const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
         const { text, type } = searchAllData;
-
         setCurrentPage(page);
         let payload = {
             firstName: null,
@@ -294,17 +281,13 @@ const Search = () => {
     };
 
 
-
-
     const renderPagination = () => {
         if (totalPages <= 1) return null;
-
         const goToPage = (page) => {
             if (page >= 1 && page <= totalPages) {
                 handleSearch(null, page, true);
             }
         };
-
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 15 }}>
                 <TouchableOpacity
@@ -320,7 +303,6 @@ const Search = () => {
                         Page {currentPage} of {totalPages}
                     </Text>
                 </View>
-
                 <TouchableOpacity
                     onPress={() => goToPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
@@ -347,13 +329,9 @@ const Search = () => {
         const flatList = (Component) => (
             <>
                 {(!searchResult.length && !dataCache[selectedTab]?.[currentPage]) ? (
-                    <View
-                        style={[styles.message_view,
-                        { width: width }
-                        ]}
-                    >
+                    <View style={styles.message_view}    >
                         <Text style={{ ...styles.message_txt, color: colors.primaryFontColor }}>
-                            Start searching today.
+                            Background reports made simple — tart searching today.
                         </Text>
                     </View>
                 ) : (
@@ -406,14 +384,18 @@ const Search = () => {
                 showsVerticalScrollIndicator={false}
                 onScroll={handleScroll}
                 scrollEventThrottle={16}
-                contentContainerStyle={{ backgroundColor: '#f0f0f0', paddingBottom: 20 }}
+                contentContainerStyle={{
+                    backgroundColor: '#f0f0f0',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingBottom: 20
+                }}
             >
                 {/* Header-------------- */}
                 <CommonHeader />
                 {/* Tabs (non-sticky) */}
 
                 {!isSticky && renderTabs()}
-
 
                 {/* Tab Content */}
                 <Animated.View
