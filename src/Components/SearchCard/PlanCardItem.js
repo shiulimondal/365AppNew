@@ -11,7 +11,6 @@ const PlanCardItem = ({ item, index, CARD_WIDTH, scrollX, colors, setPlanModal, 
         index * CARD_WIDTH,
         (index + 1) * CARD_WIDTH,
     ];
-
     // Interpolated scale value using Animated
     const scale = scrollX.interpolate({
         inputRange,

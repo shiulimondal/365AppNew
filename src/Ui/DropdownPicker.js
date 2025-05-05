@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
         padding: moderateScale(10),
         backgroundColor: 'rgba(250, 250, 250, 1)',
         marginTop: moderateScale(7),
-        // width: moderateScale(320),
         height: moderateScale(50),
         borderRadius: moderateScale(15),
         elevation: moderateScale(1),

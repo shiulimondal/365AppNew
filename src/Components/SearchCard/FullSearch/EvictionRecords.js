@@ -8,7 +8,7 @@ import LoadingSpinner from '../../../Ui/LoadingSpinner'
 import Tooltip from 'react-native-walkthrough-tooltip';
 
 const EvictionRecords = ({ evictionRecords, openLock }) => {
-    // console.log('----------------------evictionRecords--------------',evictionRecords);
+    console.log('----------------------evictionRecords--------------', evictionRecords);
     const { colors } = useTheme();
     const [showHiddenCard, setShowHiddenCard] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
@@ -153,50 +153,67 @@ const EvictionRecords = ({ evictionRecords, openLock }) => {
 
                                 if (isArray && typeof normalEvictionRecords[0] === 'object') {
                                     return normalEvictionRecords.map((item, index) => (
-                                        <View key={index}
-                                            style={{
-                                                ...styles.hiddenCard,
-                                                backgroundColor: colors.secondaryThemeColor,
-                                            }}
-                                        >
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Job Title : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.jobTitle}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Employer : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.employer}</Text>
-                                            </View>
+                                        <View key={index} style={{ ...styles.hiddenCard, backgroundColor: colors.secondaryThemeColor }}>
 
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Start Date : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.startDate}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>End Date : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.endDate}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Street Name : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.streetName}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>City : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.city}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>State : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.state}</Text>
-                                            </View>
+                                            {/* Defendant Names */}
+                                            {item.defendantNames?.map((def, i) => (
+                                                <View key={`def-${i}`} style={styles.lockview}>
+                                                    <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Defendant: </Text>
+                                                    <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{def.fullName}</Text>
+                                                </View>
+                                            ))}
 
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Zip : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.zip}</Text>
-                                            </View>
-                                            <View style={styles.lockview}>
-                                                <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Website : </Text>
-                                                <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{item?.website}</Text>
-                                            </View>
+                                            {/* Plaintiff Names */}
+                                            {item.plaintiffNames?.map((plaintiff, i) => (
+                                                <View key={`plaintiff-${i}`} style={styles.lockview}>
+                                                    <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Plaintiff: </Text>
+                                                    <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{plaintiff.fullName}</Text>
+                                                </View>
+                                            ))}
+
+                                            {/* Addresses */}
+                                            {item.addresses?.map((address, i) => (
+                                                <View key={`addr-${i}`} style={styles.lockview}>
+                                                    <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>{address.addressType}: </Text>
+                                                    <Text style={{ ...styles.address_type, color: colors.secondaryFontColor }}>{address.fullAddress}</Text>
+                                                </View>
+                                            ))}
+
+                                            {/* Eviction Details */}
+                                            {item.evictionDetails?.map((detail, i) => (
+                                                <View key={`detail-${i}`}>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Case #: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{detail.caseNumber}</Text>
+                                                    </View>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>File Date: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{detail.fileDate}</Text>
+                                                    </View>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Court ID: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{detail.courtId}</Text>
+                                                    </View>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Unlawful Detainer: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{detail.unlawfulDetainer}</Text>
+                                                    </View>
+                                                </View>
+                                            ))}
+
+                                            {/* Court Info */}
+                                            {item.courts?.map((court, i) => (
+                                                <View key={`court-${i}`}>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Court Name: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{court.courtName}</Text>
+                                                    </View>
+                                                    <View style={styles.lockview}>
+                                                        <Text style={{ ...styles.address_txt, color: colors.primaryFontColor }}>Phone: </Text>
+                                                        <Text style={{ ...styles.address, color: colors.secondaryFontColor }}>{court.courtPhoneOne}</Text>
+                                                    </View>
+                                                </View>
+                                            ))}
 
                                         </View>
                                     ));
@@ -251,10 +268,15 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.Inter.semibold,
         fontSize: moderateScale(12)
     },
+    address_type: {
+        fontFamily: FONTS.Inter.regular,
+        fontSize: moderateScale(11),
+        width: moderateScale(165),
+    },
     address: {
         fontFamily: FONTS.Inter.regular,
         fontSize: moderateScale(11),
-        width: moderateScale(190),
+        width: moderateScale(180),
     },
     address_real: {
         fontFamily: FONTS.Inter.regular,

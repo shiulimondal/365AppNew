@@ -18,15 +18,27 @@ import CustomInput from '../../Ui/CustomInput';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import Icon from '../../Ui/Icon';
+import DropdownPicker from '../../Ui/DropdownPicker';
+import TypePicker from '../../Ui/TypePicker';
+import { accountType, Industry } from '../../Constants/options';
 
 const { width, height } = Dimensions.get('screen');
 
 const EditProfile = () => {
     const { colors } = useTheme();
     const { login_status, guest_status, userData } = useSelector(state => state.User);
+    console.log('====================userData----================', userData);
+
 
     const [name, setName] = useState(userData?.fullName)
     const [email, setEmail] = useState(userData?.email)
+    const [selectAccount, setSelectAccount] = useState('')
+    const [selectIndustry, setSelectIndustry] = useState('')
+    const [isCustomIndustry, setIsCustomIndustry] = useState(false);
+    const [businessName, setBusinessName] = useState('')
+    const [position, setPosition] = useState('')
+    // const [name, setName] = useState('')
+    // const [email, setEmail] = useState('')
 
     const navigation = useNavigation();
     const viewOffset = useRef(new Animated.Value(0)).current;
@@ -71,7 +83,7 @@ const EditProfile = () => {
 
                     <View style={styles.card_view}>
 
-                        <CustomInput
+                        {/* <CustomInput
                             title="Name"
                             titleStyle={{ ...styles.title_txt, marginTop: 25 }}
                             placeholder="Enter Your Name"
@@ -97,7 +109,133 @@ const EditProfile = () => {
                                 size: 18
                             }}
                             value={email}
+                        /> */}
+
+                        <View>
+                            <Text style={{ ...styles.title_txt, marginTop: 20, color: colors.primaryFontColor }}>Account Type</Text>
+                            <TypePicker
+                                labelKey="name"
+                                valueKey="id"
+                                placeholder="Account Type"
+                                options={accountType}
+                                selectedValue={selectAccount}
+                                onValueChange={(val) => setSelectAccount(val)}
+                                textStyle={{
+                                    fontSize: moderateScale(13),
+                                    fontFamily: FONTS.Inter.regular,
+                                }}
+                            />
+
+                        </View>
+                        {selectAccount === "Business" && (
+                            <>
+                                <CustomInput
+                                    title="Business Name"
+                                    titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                                    placeholder="Business Name"
+                                    inputStyle={{ ...styles.input_sty, }}
+                                    containerStyle={{ ...styles.input_container }}
+                                    leftIcon={{
+                                        name: 'business-center',
+                                        type: 'MaterialIcons',
+                                        color: colors.tintText,
+                                        size: 18
+                                    }}
+                                    value={businessName}
+                                    onChangeText={(val) => setBusinessName(val)}
+                                />
+
+                                <CustomInput
+                                    title="Position/Role"
+                                    titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                                    placeholder="Position/Role"
+                                    inputStyle={{ ...styles.input_sty, }}
+                                    containerStyle={{ ...styles.input_container }}
+                                    leftIcon={{
+                                        name: 'torso-business',
+                                        type: 'Foundation',
+                                        color: colors.tintText,
+                                        size: 18
+                                    }}
+                                    value={position}
+                                    onChangeText={(val) => setPosition(val)}
+                                />
+
+
+
+                                <View>
+                                    <Text style={{ ...styles.title_txt, color: colors.primaryFontColor }}>Industry</Text>
+                                    <DropdownPicker
+                                        labelKey="name"
+                                        valueKey="id"
+                                        placeholder="Select an Industry"
+                                        options={Industry}
+                                        selectedValue={selectIndustry}
+                                        textStyle={{
+                                            fontSize: moderateScale(13),
+                                            fontFamily: FONTS.Inter.regular,
+                                        }}
+                                        onValueChange={(val) => {
+                                            setSelectIndustry(val);
+                                            setIsCustomIndustry(val === 'Other');
+                                        }}
+                                    />
+
+                                </View>
+
+                                {selectAccount === "Business" && isCustomIndustry && (
+                                    <CustomInput
+                                        title="Specify Industry"
+                                        titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                                        placeholder="Specify Industry"
+                                        inputStyle={{ ...styles.input_sty, }}
+                                        containerStyle={{ ...styles.input_container }}
+                                        leftIcon={{
+                                            name: 'business-center',
+                                            type: 'MaterialIcons',
+                                            color: colors.tintText,
+                                            size: 18
+                                        }}
+                                        value={selectIndustry === 'Other' ? '' : selectIndustry}
+                                        onChangeText={(val) => setSelectIndustry(val)}
+                                    />
+                                )}
+
+                            </>
+                        )}
+                        <CustomInput
+                            title="Name"
+                            titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                            placeholder="Enter Your Name"
+                            inputStyle={{ ...styles.input_sty, }}
+                            containerStyle={{ ...styles.input_container }}
+                            leftIcon={{
+                                name: 'user-o',
+                                type: 'FontAwesome',
+                                color: colors.tintText,
+                                size: 18
+                            }}
+                            value={name}
+                            onChangeText={(val) => setName(val)}
                         />
+
+
+                        <CustomInput
+                            title="Email"
+                            titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                            placeholder="Enter Your Email"
+                            inputStyle={{ ...styles.input_sty, }}
+                            containerStyle={{ ...styles.input_container }}
+                            leftIcon={{
+                                name: 'email',
+                                type: 'Fontisto',
+                                color: colors.tintText,
+                                size: 18
+                            }}
+                            value={email}
+                            onChangeText={(val) => setEmail(val)}
+                        />
+
 
 
                     </View>

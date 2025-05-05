@@ -46,6 +46,7 @@ const SearchProfile = () => {
     const token = useSelector(state => state.Payment.token);
     const transactionId = useSelector(state => state.Payment.transactionId);
     const selectedUserId = useSelector(state => state.UserId.selectedUserId);
+    const { login_status, guest_status, userData } = useSelector(state => state.User);
     // console.log('=================reali  fulll user data    dddddddddddiiiii======', getUserId);
     // console.log('payment data---------------<<<<<setPaymentData------------------', token, transactionId);
     // console.log('userdata with iddddddddddddddddddddddddddd---------------<------------------', selectedUserId);
@@ -104,9 +105,10 @@ const SearchProfile = () => {
     const handleFullUpdateSearch = async () => {
         const payload = {
             transactionId,
-            tahoeId: selectedUserId
+            tahoeId: selectedUserId,
+            logedinUserID: userData?.id || "" || null
         };
-        console.log('📤 Sending update payload to API:', payload);
+        console.log('📤 Sending update payload to API:---------------------', payload);
         try {
             setIsLoading(true);
             const res = await HomeService.setFullUpdateData(payload, token);
@@ -129,8 +131,6 @@ const SearchProfile = () => {
                 setEvictionRecords(persons[0]?.evictionRecords)
                 setDomainRecords(persons[0]?.domainRecords)
                 setAssociatesRecords(persons[0]?.relatives)
-                console.log('✅ Full update response data:', persons);
-
             }
 
 

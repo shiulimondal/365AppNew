@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     address: {
         fontFamily: FONTS.Inter.regular,
         fontSize: moderateScale(11),
-        width: moderateScale(108),
+        width: moderateScale(165),
     },
     userShow_number: {
         fontSize: moderateScale(12),

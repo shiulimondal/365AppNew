@@ -8,10 +8,7 @@ import {
     Animated,
 } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
-import { moderateScale } from '../../Constants/PixelRatio';
-import HomeDetails from '../../Components/HomeCard/HomeDetails';
-import NavigationService from '../../Services/Navigation';
-import HomeHeader from '../../Components/Header/HomeHeader';
+import { moderateScale } from '../../Constants/PixelRatio';;
 import CommonHeader from '../../Components/Header/CommonHeader';
 import { FONTS } from '../../Constants/Fonts';
 import { Learnmore, reports } from '../../Constants/options';
@@ -21,7 +18,6 @@ const { width, height } = Dimensions.get('window');
 
 const LearnMore = () => {
     const { colors } = useTheme();
-
 
     const viewOffset = useRef(new Animated.Value(0)).current;
 

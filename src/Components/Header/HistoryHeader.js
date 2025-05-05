@@ -71,9 +71,10 @@ const HistoryHeader = ({ title = '' }) => {
                 </View>
             </View>
             <View style={styles.heading_view}>
-                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Recent Purchases</Text>
+                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Recently</Text>
+                <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>Purchased Reports</Text>
                 <Text style={[styles.subheading_txt, { color: colors.subFontcolor }]}>
-                    View your purchase history, available for up to 14 days. Track your orders and manage your purchases easily!
+                    View and manage your background report history — available for up to 14 days after purchase.
                 </Text>
             </View>
 

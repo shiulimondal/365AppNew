@@ -226,8 +226,9 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             email: emailID || userData?.email,
             paymentNonce: nonce,
             couponCode: coupon?.code || '',
+            logedinUserID: userData?.id || null || ''
         };
-        console.log('===================payment payloade=================', body);
+        console.log('===================payment payloade========________________=========', body);
         const url = `${PAY_URL}/payment/v2`;
         console.log('===========================payment urllllllllllllll=========', url);
 
@@ -252,7 +253,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 Toast.show(result?.message);
                 setPaymentModal(false);
                 NavigationService.navigate('SearchProfile');
-
             } else {
                 Toast.show(result?.message);
             }

@@ -15,10 +15,16 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import HistoryCard from '../../Components/ProfileCard/HistoryCard';
 import HistoryHeader from '../../Components/Header/HistoryHeader';
+import HomeService from '../../Services/HomeServises';
+import { BASE_URL_LOCAL, frontend_api_key } from '../../Utils/HttpClient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('screen');
 
 const History = () => {
+    console.log('==================History Screen==================');
+    console.log();
+    console.log('====================================');
     const { colors } = useTheme();
     const { login_status, guest_status } = useSelector(state => state.User);
     const navigation = useNavigation();
@@ -38,6 +44,79 @@ const History = () => {
         inputRange: [0, 1],
         outputRange: [0, 1],
     });
+
+    const [userToken, setUserToken] = useState(null);
+    useEffect(() => {
+        checkUserStatus()
+    }, [])
+
+    const checkUserStatus = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        if (userToken) {
+            setUserToken(userToken);
+        } else {
+            setUserToken(null);
+        }
+    };
+
+    useEffect(() => {
+        handleShowHistory()
+    }, [])
+
+    const handleShowHistory = async () => {
+        const url = `${BASE_URL_LOCAL}/user/search-history`; // Add query params here if needed
+        console.log('===================History url=================-------------', url);
+
+        try {
+            // setLoading(true);
+            const res = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
+                    "x-frontend-api-key": frontend_api_key
+                },
+            });
+
+            const result = await res.json();
+            console.log('===================History result=================-------------', result);
+            // Handle the result
+        } catch (err) {
+            console.error('History list error:', err);
+        } finally {
+            // setLoading(false);
+        }
+    };
+
+
+    // const handleSubmitHistory = async () => {
+    //     const body = {
+    //         // logedinUserID: userData?.id || null || ''
+    //     };
+
+    //     const url = `${BASE_URL_LOCAL}user/search-history/1`;
+    //     console.log('===========================payment urllllllllllllll=========', url);
+
+    //     try {
+    //         // setLoading(true);
+    //         const res = await fetch(url, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${userToken}`,
+    //             },
+    //             body: JSON.stringify(body),
+    //         });
+    //         const result = await res.json();
+    //         console.log('===================History submit  result=================', result);
+
+    //     } catch (err) {
+    //         console.error('Payment error:', err);
+    //         // Toast.show('Payment failed. Please try again.');
+    //     } finally {
+    //         // setLoading(false);
+    //     }
+    // };
 
 
     return (

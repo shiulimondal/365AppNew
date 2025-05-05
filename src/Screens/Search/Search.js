@@ -203,6 +203,7 @@ const Search = () => {
     const validateAddress = (address) => {
         return address?.main_text && address?.secondary_text;
     };
+
     const handleSearch = async (forAdv = null, page = 1, reusePrevious = false) => {
         const { text, type } = searchAllData;
         setCurrentPage(page);
@@ -331,7 +332,7 @@ const Search = () => {
                 {(!searchResult.length && !dataCache[selectedTab]?.[currentPage]) ? (
                     <View style={styles.message_view}    >
                         <Text style={{ ...styles.message_txt, color: colors.primaryFontColor }}>
-                            Background reports made simple — tart searching today.
+                            Background reports made simple — Start searching today.
                         </Text>
                     </View>
                 ) : (

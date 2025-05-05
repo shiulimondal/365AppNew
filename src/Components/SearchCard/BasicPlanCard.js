@@ -39,7 +39,7 @@ const BasicPlanCard = ({ setPlanModal, setPaymentModal, setPrice, setPlanName })
         <View style={styles.container}>
             <Text style={[styles.title_txt, { color: colors.secondaryThemeColor }]}>Choose Report</Text>
 
-            <View style={{ height: height / 1.3 }}>
+            <View style={{ height: height / 1.27 }}>
                 <CustomCarousel
                     data={planData}
                     scrollX={scrollX}
@@ -72,10 +72,17 @@ const BasicPlanCard = ({ setPlanModal, setPaymentModal, setPrice, setPlanName })
                                 ]}
                             >
                                 {item?.popular && (
-                                    <Image
-                                        source={require('../../assets/images/popular.png')}
-                                        style={styles.pimg_sty}
-                                    />
+                                    <View style={{
+                                        position: 'absolute',
+                                        right: moderateScale(10),
+                                        top: moderateScale(10)
+                                    }}>
+                                        <Image
+                                            source={require('../../assets/images/popular.png')}
+                                            style={styles.pimg_sty}
+                                        />
+                                    </View>
+
                                 )}
                                 <Text style={[styles.plan_title, { color: colors.secondaryFontColor }]}>
                                     {item.title}
@@ -123,7 +130,7 @@ const BasicPlanCard = ({ setPlanModal, setPaymentModal, setPrice, setPlanName })
                                     style={[styles.button_sty, { backgroundColor: colors.buttonColor }]}
                                 >
                                     <Text style={[styles.button_txt, { color: colors.secondaryThemeColor }]}>
-                                        Select For ${item?.price}
+                                        "Unlock Report  ${item?.price}"
                                     </Text>
                                 </TouchableOpacity>
                             </Animated.View>
@@ -171,15 +178,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     pimg_sty: {
-        height: moderateScale(28),
-        width: moderateScale(75),
+        height: moderateScale(25),
+        width: moderateScale(65),
         resizeMode: "contain",
         alignSelf: 'flex-end',
     },
     plan_title: {
         fontSize: moderateScale(20),
         fontFamily: FONTS.Inter.semibold,
-        marginBottom: moderateScale(5)
+        marginBottom: moderateScale(5),
+        marginTop: moderateScale(7)
     },
     check_view: {
         flexDirection: 'row',
