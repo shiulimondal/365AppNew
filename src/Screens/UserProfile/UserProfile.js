@@ -56,7 +56,7 @@ const UserProfile = () => {
         setTimeout(() => {
             setIsLoading(false);
             setOpenModal(false);
-            logoutUser();
+            dispatch(logoutUser());
             navigation.navigate('Login')
         }, 500);
     };

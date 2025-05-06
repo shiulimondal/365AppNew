@@ -236,7 +236,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
         }
     };
 
-
     const handlePaymentSubmit = async (nonce) => {
         if (!validateInputs()) {
             setLoading(false); // stop loader if invalid

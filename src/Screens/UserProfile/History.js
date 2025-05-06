@@ -31,6 +31,7 @@ const History = () => {
     // console.log('===============historyData=====================', historyData);
     const [loading, setLoading] = useState(false);
     const [getId, setGetId] = useState('');
+    const [getEmail, setGetEmail] = useState('');
 
     const viewOffset = useRef(new Animated.Value(0)).current;
     useEffect(() => {
@@ -72,7 +73,7 @@ const History = () => {
             });
 
             const result = await res.json();
-            // console.log('===================History result=================-------------', result);
+            console.log('===================History result=================-------------', result);
             setHistoryData(result?.data)
         } catch (err) {
             console.error('History list error:', err);
@@ -170,9 +171,10 @@ const History = () => {
                                             onPress={() => {
                                                 setOpenModal(true),
                                                     setGetId(item?.id)
+                                                setGetEmail(item?.userEmail)
                                             }}
                                             style={{ ...styles.email_btn, backgroundColor: colors.buttonColor }}>
-                                            <Text style={{ ...styles.buttonText, color: colors.secondaryThemeColor }}>Send</Text>
+                                            <Text style={{ ...styles.buttonText_txt, color: colors.secondaryThemeColor }}>Send Mail</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )}
@@ -194,13 +196,12 @@ const History = () => {
                         backgroundColor: '#fff', padding: moderateScale(20),
                         borderRadius: moderateScale(10)
                     }}>
-
                         <Text style={{ ...styles.heading_txt, }}>
-                            Request Invoice
+                            Request Full Report
                         </Text>
 
                         <Text style={{ ...styles.subheading_txt, }}>
-                            You will receive an invoice at your email shortly after confirming.
+                            You will receive a full report at your email ({getEmail}) shortly after confirming.
                         </Text>
 
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -299,6 +300,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: moderateScale(7)
+    },
+    buttonText_txt: {
+        fontSize: moderateScale(14),
+        fontFamily: FONTS.Inter.medium,
     },
     modalView: {
         flex: 1,
