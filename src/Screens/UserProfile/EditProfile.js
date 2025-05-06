@@ -100,8 +100,8 @@ const EditProfile = () => {
                     <View style={styles.card_view}>
 
                         <View>
-                            <Text style={{ ...styles.title_txt, marginTop: 20, color: colors.primaryFontColor }}>Account Type</Text>
-                            <TypePicker
+                            {/* <Text style={{ ...styles.title_txt, marginTop: 20, color: colors.primaryFontColor }}>Account Type</Text> */}
+                            {/* <TypePicker
                                 labelKey="name"
                                 valueKey="id"
                                 placeholder="Account Type"
@@ -112,12 +112,25 @@ const EditProfile = () => {
                                     fontSize: moderateScale(13),
                                     fontFamily: FONTS.Inter.regular,
                                 }}
+                            /> */}
+
+                            <CustomInput
+                                editable={false}
+                                title="Account Type"
+                                titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                                placeholder="Account Type"
+                                inputStyle={{ ...styles.input_sty, }}
+                                containerStyle={{ ...styles.input_container }}
+                                value={selectAccount}
+                                onChangeText={(val) => setSelectAccount(val)}
                             />
+
 
                         </View>
                         {selectAccount === "Business" && (
                             <>
                                 <CustomInput
+                                    editable={false}
                                     title="Business Name"
                                     titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                                     placeholder="Business Name"
@@ -134,6 +147,7 @@ const EditProfile = () => {
                                 />
 
                                 <CustomInput
+                                    editable={false}
                                     title="Position/Role"
                                     titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                                     placeholder="Position/Role"
@@ -152,8 +166,8 @@ const EditProfile = () => {
 
 
                                 <View>
-                                    <Text style={{ ...styles.title_txt, color: colors.primaryFontColor }}>Industry</Text>
-                                    <DropdownPicker
+                                    {/* <Text style={{ ...styles.title_txt, color: colors.primaryFontColor }}>Industry</Text> */}
+                                    {/* <DropdownPicker
                                         labelKey="name"
                                         valueKey="id"
                                         placeholder="Select an Industry"
@@ -171,6 +185,17 @@ const EditProfile = () => {
                                                 setCustomIndustryValue('');
                                             }
                                         }}
+                                    /> */}
+
+                                    <CustomInput
+                                        editable={false}
+                                        title="Industry"
+                                        titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
+                                        placeholder="Select an Industry"
+                                        inputStyle={{ ...styles.input_sty, }}
+                                        containerStyle={{ ...styles.input_container }}
+                                        value={selectIndustry}
+                                        onChangeText={(val) => setSelectIndustry(val)}
                                     />
 
                                 </View>
@@ -198,6 +223,7 @@ const EditProfile = () => {
 
                         <CustomInput
                             title="Name"
+                            editable={false}
                             titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                             placeholder="Enter Your Name"
                             inputStyle={{ ...styles.input_sty, }}
@@ -236,13 +262,13 @@ const EditProfile = () => {
                 </Animated.View>
 
             </ScrollView>
-            {(login_status && !guest_status) && (
+            {/* {(login_status && !guest_status) && (
                 <TouchableOpacity
                     // onPress={() =>}
                     style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}    >
                     <Text style={{ ...styles.button_txt, color: colors.secondaryThemeColor }}>Submit</Text>
                 </TouchableOpacity>
-            )}
+            )} */}
 
 
         </View>

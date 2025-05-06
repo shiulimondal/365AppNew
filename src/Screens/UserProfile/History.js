@@ -68,19 +68,31 @@ const History = () => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userToken}`,
-                    "x-frontend-api-key": frontend_api_key
+                    'x-frontend-api-key': frontend_api_key,
                 },
             });
 
             const result = await res.json();
-            console.log('===================History result=================-------------', result);
-            setHistoryData(result?.data)
+            const rawData = result.data || result;
+
+            const reduced = rawData.reduce((acc, curr) => {
+                const found = acc.find(item => item.searchID === curr.searchID);
+                if (found) {
+                    found.value += curr.value;
+                } else {
+                    acc.push({ ...curr });
+                }
+                return acc;
+            }, []);
+
+            setHistoryData(reduced);
         } catch (err) {
             console.error('History list error:', err);
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleSubmitHistory = async () => {
         const userToken = await AsyncStorage.getItem("token");

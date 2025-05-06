@@ -101,7 +101,6 @@ const SearchProfile = () => {
     }, [token, transactionId, selectedUserId]);
 
 
-
     const handleFullUpdateSearch = async () => {
         const payload = {
             transactionId,

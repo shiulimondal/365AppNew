@@ -13,6 +13,7 @@ const CustomInput = ({
     rightAction,
     inputStyle = {},
     containerStyle = {},
+    editable = false
 }) => {
     return (
         <View style={[{ width: '100%', }]}>
@@ -45,6 +46,7 @@ const CustomInput = ({
                     secureTextEntry={secureTextEntry}
                     value={value}
                     onChangeText={onChangeText}
+                    editable={editable}
                 />
 
                 {/* Right Element (icon/button etc.) */}

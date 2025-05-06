@@ -193,12 +193,12 @@ const Login = () => {
                             onChangeText={(val) => setPassword(val)}
                         />
 
-                        <Text
+                        {/* <Text
                             onPress={() => NavigationService.navigate('Email')}
                             style={{
                                 ...styles.forget_password,
                                 color: colors.bottomTab
-                            }}>Forget Password ?</Text>
+                            }}>Forget Password ?</Text> */}
 
                         <TouchableOpacity
                             onPress={() => handleSubmit()}

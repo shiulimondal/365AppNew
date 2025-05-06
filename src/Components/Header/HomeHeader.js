@@ -40,12 +40,7 @@ const HomeHeader = ({ title = '' }) => {
                 />
                 <View style={styles.user_view}>
                     {userData && userData.fullName ? (
-                        <View style={{
-                            // alignSelf: 'flex-end',
-                            // alignItems: 'flex-end',
-                            // maxWidth: '75%',
-                            // borderWidth: 1
-                        }}>
+                        <View>
                             <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
                             <Text
                                 numberOfLines={1}
@@ -53,7 +48,6 @@ const HomeHeader = ({ title = '' }) => {
                                     fontFamily: FONTS.Inter.medium,
                                     fontSize: moderateScale(14),
                                     color: colors.subFontcolor,
-                                    // textAlign: 'left',
                                     marginTop: moderateScale(-6)
                                 }}>
                                 {username?.split(' ')[0]}
