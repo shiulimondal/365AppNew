@@ -65,11 +65,7 @@ const SearchHeader = ({ userdata }) => {
                 />
                 <View style={styles.user_view}>
                     {userData && userData.fullName ? (
-                        <View style={{
-                            alignSelf: 'flex-end',
-                            alignItems: 'flex-end',
-                            maxWidth: '75%',
-                        }}>
+                        <View>
                             <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
                             <Text
                                 numberOfLines={1}
@@ -77,14 +73,13 @@ const SearchHeader = ({ userdata }) => {
                                     fontFamily: FONTS.Inter.medium,
                                     fontSize: moderateScale(14),
                                     color: colors.subFontcolor,
-                                    textAlign: 'right',
                                     marginTop: moderateScale(-6)
                                 }}>
-                                {username}
+                                {username?.split(' ')[0]}
                             </Text>
                         </View>
                     ) : (
-                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'center' }]}>Hello</Text>
                     )}
 
                     <TouchableOpacity

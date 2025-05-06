@@ -41,9 +41,10 @@ const HomeHeader = ({ title = '' }) => {
                 <View style={styles.user_view}>
                     {userData && userData.fullName ? (
                         <View style={{
-                            alignSelf: 'flex-end',
-                            alignItems: 'flex-end',
-                            maxWidth: '75%',
+                            // alignSelf: 'flex-end',
+                            // alignItems: 'flex-end',
+                            // maxWidth: '75%',
+                            // borderWidth: 1
                         }}>
                             <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
                             <Text
@@ -52,14 +53,14 @@ const HomeHeader = ({ title = '' }) => {
                                     fontFamily: FONTS.Inter.medium,
                                     fontSize: moderateScale(14),
                                     color: colors.subFontcolor,
-                                    textAlign: 'right',
+                                    // textAlign: 'left',
                                     marginTop: moderateScale(-6)
                                 }}>
-                                {username}
+                                {username?.split(' ')[0]}
                             </Text>
                         </View>
                     ) : (
-                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'center' }]}>Hello</Text>
                     )}
 
                     <TouchableOpacity

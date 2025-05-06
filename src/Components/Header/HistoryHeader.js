@@ -35,26 +35,21 @@ const HistoryHeader = ({ title = '' }) => {
                 <Image source={require('../../assets/images/logo.png')} style={styles.logo_img} />
                 <View style={styles.user_view}>
                     {userData && userData.fullName ? (
-                        <View style={{
-                            alignSelf: 'flex-end',
-                            alignItems: 'flex-end',
-                            maxWidth: '75%',
-                        }}>
+                        <View>
                             <Text style={[styles.username_txt, { color: colors.subFontcolor }]}>Hello </Text>
                             <Text
                                 numberOfLines={1}
                                 style={{
                                     fontFamily: FONTS.Inter.medium,
-                                    fontSize: moderateScale(17),
+                                    fontSize: moderateScale(14),
                                     color: colors.subFontcolor,
-                                    textAlign: 'right',
                                     marginTop: moderateScale(-6)
                                 }}>
-                                {username}
+                                {username?.split(' ')[0]}
                             </Text>
                         </View>
                     ) : (
-                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'flex-end' }]}>Hello</Text>
+                        <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'center' }]}>Hello</Text>
                     )}
 
                     <TouchableOpacity
