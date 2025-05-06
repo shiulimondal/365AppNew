@@ -65,7 +65,7 @@ const EditProfile = () => {
             setSelectIndustry(isCustom ? 'Other' : userIndustry);
             setCustomIndustryValue(isCustom ? userIndustry : '');
             setIsCustomIndustry(isCustom);
-            setSelectAccount(userData.accountType === 'business' ? 'Business' : 'Individual');
+            setSelectAccount(userData.accountType === 'business' ? 'Business' : 'Personal');
             setBusinessName(userData.businessName || '');
             setPosition(userData.position?.trim() || '');
             setName(userData.fullName || '');
@@ -202,6 +202,7 @@ const EditProfile = () => {
 
                                 {selectAccount === "Business" && isCustomIndustry && (
                                     <CustomInput
+                                    editable={false}
                                         title="Specify Industry"
                                         titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                                         placeholder="Specify Industry"
@@ -240,6 +241,7 @@ const EditProfile = () => {
 
 
                         <CustomInput
+                           editable={false}
                             title="Email"
                             titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                             placeholder="Enter Your Email"

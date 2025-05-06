@@ -13,7 +13,7 @@ const CustomInput = ({
     rightAction,
     inputStyle = {},
     containerStyle = {},
-    editable = false
+    editable = true
 }) => {
     return (
         <View style={[{ width: '100%', }]}>
