@@ -29,16 +29,14 @@ const EditProfile = () => {
     const { login_status, guest_status, userData } = useSelector(state => state.User);
     console.log('====================userData----================', userData);
 
-
-    const [name, setName] = useState(userData?.fullName)
-    const [email, setEmail] = useState(userData?.email)
-    const [selectAccount, setSelectAccount] = useState('')
-    const [selectIndustry, setSelectIndustry] = useState('')
+    const [selectAccount, setSelectAccount] = useState('');
+    const [businessName, setBusinessName] = useState('');
+    const [position, setPosition] = useState('');
+    const [selectIndustry, setSelectIndustry] = useState('');
+    const [customIndustryValue, setCustomIndustryValue] = useState('');
     const [isCustomIndustry, setIsCustomIndustry] = useState(false);
-    const [businessName, setBusinessName] = useState('')
-    const [position, setPosition] = useState('')
-    // const [name, setName] = useState('')
-    // const [email, setEmail] = useState('')
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
 
     const navigation = useNavigation();
     const viewOffset = useRef(new Animated.Value(0)).current;
@@ -58,6 +56,24 @@ const EditProfile = () => {
         inputRange: [0, 1],
         outputRange: [0, 1],
     });
+
+    useEffect(() => {
+        if (userData) {
+            const industryIds = Industry.map(item => item.id);
+            const userIndustry = userData.industry?.trim();
+            const isCustom = userIndustry && !industryIds.includes(userIndustry);
+            setSelectIndustry(isCustom ? 'Other' : userIndustry);
+            setCustomIndustryValue(isCustom ? userIndustry : '');
+            setIsCustomIndustry(isCustom);
+            setSelectAccount(userData.accountType === 'business' ? 'Business' : 'Individual');
+            setBusinessName(userData.businessName || '');
+            setPosition(userData.position?.trim() || '');
+            setName(userData.fullName || '');
+            setEmail(userData.email || '');
+        }
+    }, [userData]);
+
+
 
 
     return (
@@ -82,34 +98,6 @@ const EditProfile = () => {
                     ]}>
 
                     <View style={styles.card_view}>
-
-                        {/* <CustomInput
-                            title="Name"
-                            titleStyle={{ ...styles.title_txt, marginTop: 25 }}
-                            placeholder="Enter Your Name"
-                            inputStyle={{ ...styles.input_sty, }}
-                            leftIcon={{
-                                name: 'user-o',
-                                type: 'FontAwesome',
-                                color: colors.tintText,
-                                size: 18
-                            }}
-                            value={name}
-                        />
-
-                        <CustomInput
-                            title="Email"
-                            titleStyle={{ ...styles.title_txt }}
-                            placeholder="Enter Your Email"
-                            inputStyle={{ ...styles.input_sty, }}
-                            leftIcon={{
-                                name: 'email',
-                                type: 'Fontisto',
-                                color: colors.tintText,
-                                size: 18
-                            }}
-                            value={email}
-                        /> */}
 
                         <View>
                             <Text style={{ ...styles.title_txt, marginTop: 20, color: colors.primaryFontColor }}>Account Type</Text>
@@ -177,7 +165,11 @@ const EditProfile = () => {
                                         }}
                                         onValueChange={(val) => {
                                             setSelectIndustry(val);
-                                            setIsCustomIndustry(val === 'Other');
+                                            const custom = val === 'Other';
+                                            setIsCustomIndustry(custom);
+                                            if (!custom) {
+                                                setCustomIndustryValue('');
+                                            }
                                         }}
                                     />
 
@@ -188,7 +180,7 @@ const EditProfile = () => {
                                         title="Specify Industry"
                                         titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                                         placeholder="Specify Industry"
-                                        inputStyle={{ ...styles.input_sty, }}
+                                        inputStyle={{ ...styles.input_sty }}
                                         containerStyle={{ ...styles.input_container }}
                                         leftIcon={{
                                             name: 'business-center',
@@ -196,13 +188,14 @@ const EditProfile = () => {
                                             color: colors.tintText,
                                             size: 18
                                         }}
-                                        value={selectIndustry === 'Other' ? '' : selectIndustry}
-                                        onChangeText={(val) => setSelectIndustry(val)}
+                                        value={customIndustryValue}
+                                        onChangeText={(val) => setCustomIndustryValue(val)}
                                     />
                                 )}
 
                             </>
                         )}
+
                         <CustomInput
                             title="Name"
                             titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}

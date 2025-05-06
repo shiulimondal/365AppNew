@@ -7,27 +7,31 @@ import {
     ScrollView,
     Animated,
     FlatList,
+    TouchableOpacity,
+    Modal,
+    ActivityIndicator,
 } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
 import { FONTS } from '../../Constants/Fonts';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import HistoryCard from '../../Components/ProfileCard/HistoryCard';
 import HistoryHeader from '../../Components/Header/HistoryHeader';
-import HomeService from '../../Services/HomeServises';
-import { BASE_URL_LOCAL, frontend_api_key } from '../../Utils/HttpClient';
+import { frontend_api_key, PAY_URL } from '../../Utils/HttpClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShimmerLoader from '../../Ui/ShimmerLoader';
+import Toast from "react-native-simple-toast";
 
 const { width, height } = Dimensions.get('screen');
 
 const History = () => {
-    console.log('==================History Screen==================');
-    console.log();
-    console.log('====================================');
     const { colors } = useTheme();
-    const { login_status, guest_status } = useSelector(state => state.User);
-    const navigation = useNavigation();
+    const [isOpenModal, setOpenModal] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [historyData, setHistoryData] = useState({})
+    // console.log('===============historyData=====================', historyData);
+    const [loading, setLoading] = useState(false);
+    const [getId, setGetId] = useState('');
+
     const viewOffset = useRef(new Animated.Value(0)).current;
     useEffect(() => {
         Animated.timing(viewOffset, {
@@ -45,30 +49,19 @@ const History = () => {
         outputRange: [0, 1],
     });
 
-    const [userToken, setUserToken] = useState(null);
-    useEffect(() => {
-        checkUserStatus()
-    }, [])
-
-    const checkUserStatus = async () => {
-        const userToken = await AsyncStorage.getItem("token");
-        if (userToken) {
-            setUserToken(userToken);
-        } else {
-            setUserToken(null);
-        }
-    };
-
     useEffect(() => {
         handleShowHistory()
     }, [])
 
-    const handleShowHistory = async () => {
-        const url = `${BASE_URL_LOCAL}/user/search-history`; // Add query params here if needed
-        console.log('===================History url=================-------------', url);
 
+    const handleShowHistory = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        const url = `${PAY_URL}/user/search-history`;
+        console.log('🔍 URL:', url);
+        console.log('🔑 Token:', userToken);
+        console.log('🗝️ API Key:', frontend_api_key);
         try {
-            // setLoading(true);
+            setLoading(true);
             const res = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -79,44 +72,45 @@ const History = () => {
             });
 
             const result = await res.json();
-            console.log('===================History result=================-------------', result);
-            // Handle the result
+            // console.log('===================History result=================-------------', result);
+            setHistoryData(result?.data)
         } catch (err) {
             console.error('History list error:', err);
         } finally {
-            // setLoading(false);
+            setLoading(false);
         }
     };
 
-
-    // const handleSubmitHistory = async () => {
-    //     const body = {
-    //         // logedinUserID: userData?.id || null || ''
-    //     };
-
-    //     const url = `${BASE_URL_LOCAL}user/search-history/1`;
-    //     console.log('===========================payment urllllllllllllll=========', url);
-
-    //     try {
-    //         // setLoading(true);
-    //         const res = await fetch(url, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${userToken}`,
-    //             },
-    //             body: JSON.stringify(body),
-    //         });
-    //         const result = await res.json();
-    //         console.log('===================History submit  result=================', result);
-
-    //     } catch (err) {
-    //         console.error('Payment error:', err);
-    //         // Toast.show('Payment failed. Please try again.');
-    //     } finally {
-    //         // setLoading(false);
-    //     }
-    // };
+    const handleSubmitHistory = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        const url = `${PAY_URL}/user/search-history/${getId}`;
+        // console.log('🔍 --------------------------------------------URL:', url);
+        try {
+            setIsLoading(true);
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userToken}`,
+                    'x-frontend-api-key': frontend_api_key,
+                },
+                body: JSON.stringify({})
+            });
+            const result = await res.json();
+            // console.log('===================History result=================', result);
+            if (result?.success == true) {
+                Toast.show(result?.message);
+                setOpenModal(false)
+            } else {
+                Toast.show(result?.message);
+            }
+        } catch (err) {
+            console.error('History error:', err);
+            Toast.show('Something Wrong. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
 
     return (
@@ -128,7 +122,6 @@ const History = () => {
                     <HistoryHeader />
 
                 </View>
-
                 <Animated.View
                     style={[
                         styles.tabView,
@@ -139,23 +132,104 @@ const History = () => {
                             marginTop: moderateScale(-30),
                         },
                     ]}>
+                    {loading ? (
+                        <View>
+                            <ShimmerLoader />
+                        </View>
 
-                    <View style={styles.card_view}>
-                        <Text style={{ ...styles.title_txt, color: colors.secondaryFontColor }}>Select the profile, and the invoice will be delivered to the linked email ID</Text>
-                        <FlatList
-                            data={[...Array(30)]}
-                            keyExtractor={(item) => item?.toString()}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={({ item, index }) => (
-                                <HistoryCard data={item} index={index} />
-                            )}
-                        />
-                    </View>
+                    ) : historyData?.length === 0 ? (
+                        <View style={styles.card_view}>
+                            <Text style={{
+                                ...styles.title_txt,
+                                marginTop: moderateScale(100),
+                                color: colors.secondaryFontColor,
+                            }}>
+                                No data found
+                            </Text>
+                        </View>
+
+                    ) : (
+                        <View style={styles.card_view}>
+                            <Text style={{ ...styles.title_txt, color: colors.secondaryFontColor }}>Select the profile, and the invoice will be delivered to the linked email ID</Text>
+                            <FlatList
+                                data={historyData}
+                                keyExtractor={(item, index) => item?.searchID?.toString() || index.toString()}
+                                showsVerticalScrollIndicator={false}
+                                renderItem={({ item, index }) => (
+                                    <View index={index} style={{ ...styles.main_view, backgroundColor: colors.subFontcolor }}>
+                                        <View>
+                                            <Text style={{ ...styles.username, color: colors.primaryFontColor }}>{item?.searchItemName}</Text>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                <Text style={{ ...styles.id_txt, color: colors.primaryFontColor }}>Id : </Text>
+                                                <Text style={{ ...styles.email_txt, color: colors.tintText }}>{item?.searchID
+                                                }</Text>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                setOpenModal(true),
+                                                    setGetId(item?.id)
+                                            }}
+                                            style={{ ...styles.email_btn, backgroundColor: colors.buttonColor }}>
+                                            <Text style={{ ...styles.buttonText, color: colors.secondaryThemeColor }}>Send</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            />
+                        </View>
+                    )}
 
 
                 </Animated.View>
 
             </ScrollView>
+
+            <Modal animationType="slide" transparent={true}
+                visible={isOpenModal}
+                onRequestClose={() => setOpenModal(false)}>
+
+                <View style={styles.modalView}>
+                    <View style={{
+                        backgroundColor: '#fff', padding: moderateScale(20),
+                        borderRadius: moderateScale(10)
+                    }}>
+
+                        <Text style={{ ...styles.heading_txt, }}>
+                            Request Invoice
+                        </Text>
+
+                        <Text style={{ ...styles.subheading_txt, }}>
+                            You will receive an invoice at your email shortly after confirming.
+                        </Text>
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <TouchableOpacity
+                                onPress={() => setOpenModal(false)}
+                                style={{ ...styles.button, backgroundColor: colors.secondaryFontColor }}
+                            >
+                                <Text style={{ ...styles.buttonText, color: colors.secondaryThemeColor }}>No</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => handleSubmitHistory()}
+                                disabled={isLoading}
+                                style={{ ...styles.button, backgroundColor: colors.buttonColor }}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator size="small" color={colors.secondaryThemeColor} />
+                                ) : (
+                                    <Text style={{ ...styles.buttonText, color: colors.secondaryThemeColor }}>
+                                        Yes
+                                    </Text>
+                                )}
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </View>
+
+            </Modal>
 
         </View>
     );
@@ -185,6 +259,28 @@ const styles = StyleSheet.create({
         paddingTop: moderateScale(15),
         paddingBottom: moderateScale(30)
     },
+    main_view: {
+        padding: moderateScale(10),
+        marginHorizontal: moderateScale(10),
+        borderRadius: moderateScale(10),
+        marginTop: moderateScale(15),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        elevation: 1
+    },
+    username: {
+        fontSize: moderateScale(16),
+        fontFamily: FONTS.Inter.semibold,
+    },
+    email_txt: {
+        fontSize: moderateScale(12),
+        fontFamily: FONTS.Inter.medium,
+    },
+    id_txt: {
+        fontSize: moderateScale(13),
+        fontFamily: FONTS.Inter.semibold,
+    },
     title_view: {
         marginTop: moderateScale(70),
         alignItems: 'center'
@@ -196,6 +292,41 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingHorizontal: moderateScale(10),
         marginBottom: moderateScale(15)
+    },
+    email_btn: {
+        height: moderateScale(30),
+        width: moderateScale(80),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: moderateScale(7)
+    },
+    modalView: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: moderateScale(20),
+    },
+    heading_txt: {
+        textAlign: 'center',
+        fontSize: moderateScale(22),
+        fontFamily: FONTS.Inter.semibold,
+        marginBottom: moderateScale(15)
+    },
+    subheading_txt: {
+        textAlign: 'center',
+        fontSize: moderateScale(14),
+        fontFamily: FONTS.Inter.medium,
+    },
+    button: {
+        paddingVertical: moderateScale(10),
+        paddingHorizontal: moderateScale(20),
+        borderRadius: moderateScale(5),
+        marginTop: moderateScale(20)
+    },
+    buttonText: {
+        fontSize: moderateScale(16),
+        fontFamily: FONTS.Inter.medium,
     },
 
 });

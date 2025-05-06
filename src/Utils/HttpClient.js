@@ -2,26 +2,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const BASE_URL = 'https://365instantcheck.com/api'; --original one
 const BASE_URL = 'https://dev.365instantcheck.com/api'; // dev url
-export const BASE_URL_LOCAL = 'http://192.168.1.30:5000/api'; // local url
+// export const BASE_URL_LOCAL = 'http://192.168.1.30:5000/api'; // local url
 
 // export const PAY_URL = 'https://365instantcheck.com/api'; --original one
 export const PAY_URL = 'https://dev.365instantcheck.com/api'; // dev url
-
-// export const PAY_URL = 'http://192.168.1.30:5000/api'; // local url
-
-
 // export const COUPON_URL = 'https://365instantcheck.com/api/admin'; -- original url 
 export const COUPON_URL = 'https://dev.365instantcheck.com/api/admin'; // dev url
-
-
-
 
 export const payment_api_key = '233830ba05c87e5cd4a82b6ba36763e77b0bdcb1d664eb35edd14177d53c2bed';
 export const frontend_api_key = 'dc8915f11ecfe29826baa0f4b10669fbe1b3f97bf3ac08376949ee0aadc08e03';
 
 
-async function get(endpoint, params) {
-    return request(endpoint, params, "GET");
+async function get(endpoint, params, customHeaders = {}) {
+    return request(endpoint, params, "GET", customHeaders);
 }
 
 async function post(endpoint, params, customHeaders = {}) {

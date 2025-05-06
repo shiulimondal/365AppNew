@@ -193,9 +193,32 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
     };
 
     const [webViewLoaded, setWebViewLoaded] = useState(false);
+
+    // const handlePayment = () => {
+    //     const isValid = validateInputs();
+    //     if (!isValid) return;
+
+    //     const [expMonth, expYear] = expiry.split('/');
+    //     const cardData = {
+    //         cardNumber,
+    //         expMonth,
+    //         expYear,
+    //         cvv,
+    //     };
+    //     // console.log('===================== masterrrrr  cardData===============', cardData);
+    //     if (webViewLoaded) {
+    //         webViewRef.current?.postMessage(JSON.stringify(cardData));
+    //     } else {
+    //         Toast.show('WebView not ready', 'Please wait for the payment screen to load.');
+    //     }
+
+    // }
+
     const handlePayment = () => {
         const isValid = validateInputs();
         if (!isValid) return;
+
+        setLoading(true); // ✅ Show loader immediately after validation
 
         const [expMonth, expYear] = expiry.split('/');
         const cardData = {
@@ -204,36 +227,37 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             expYear,
             cvv,
         };
-        // console.log('===================== masterrrrr  cardData===============', cardData);
+
         if (webViewLoaded) {
             webViewRef.current?.postMessage(JSON.stringify(cardData));
         } else {
+            setLoading(false); // ❌ Stop loader if WebView isn't ready
             Toast.show('WebView not ready', 'Please wait for the payment screen to load.');
         }
+    };
 
-    }
 
     const handlePaymentSubmit = async (nonce) => {
-        // console.log('===============payment nonce=====================', nonce);
-        if (!validateInputs()) return;
+        if (!validateInputs()) {
+            setLoading(false); // stop loader if invalid
+            return;
+        }
 
         const body = {
             amount: discountedAmount ? parseFloat(discountedAmount) : parseFloat(price),
             productOriginalPrice: parseFloat(price),
             productType: planName,
-            firstName: cardHolder.split(' ')[0] || userData?.fullNamesplit(' ')[0] || '',
-            lastName: cardHolder.split(' ')[1] || userData?.fullNamesplit(' ')[0] || '',
+            firstName: cardHolder.split(' ')[0] || userData?.fullName?.split(' ')[0] || '',
+            lastName: cardHolder.split(' ')[1] || userData?.fullName?.split(' ')[1] || '',
             email: emailID || userData?.email,
             paymentNonce: nonce,
             couponCode: coupon?.code || '',
-            logedinUserID: userData?.id || null || ''
+            logedinUserID: userData?.id || '',
         };
-        console.log('===================payment payloade========________________=========', body);
+
         const url = `${PAY_URL}/payment/v2`;
-        console.log('===========================payment urllllllllllllll=========', url);
 
         try {
-            setLoading(true);
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -243,9 +267,11 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 },
                 body: JSON.stringify(body),
             });
+
             const result = await res.json();
-            console.log('===================payment result=================', result);
-            if (result?.success == true) {
+            console.log('Payment result:', result);
+
+            if (result?.success) {
                 dispatch(setPaymentData({
                     token: result?.data?.token,
                     transactionId: result?.data?.transactionId,
@@ -254,15 +280,16 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 setPaymentModal(false);
                 NavigationService.navigate('SearchProfile');
             } else {
-                Toast.show(result?.message);
+                Toast.show(result?.message || 'Payment failed');
             }
         } catch (err) {
             console.error('Payment error:', err);
             Toast.show('Payment failed. Please try again.');
         } finally {
-            setLoading(false);
+            setLoading(false); // ✅ stop loader here no matter what
         }
     };
+
 
     const inputStyle = {
         backgroundColor: colors.inputBox,

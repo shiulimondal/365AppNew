@@ -21,7 +21,6 @@ import AuthService from '../../Services/Auth';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setUser } from '../../Redux/reducer/User';
-import { frontend_api_key } from '../../Utils/HttpClient';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -86,6 +85,7 @@ const Login = () => {
             setbuttonLoader(true);
             const res = await AuthService.setLogin(payload);
             console.log('✅ Log API response:---------------------------', res);
+
             const normalizedUserData = {
                 id: res.data?.user_data?.id,
                 fullName: res.data?.user_data?.fullName,
@@ -124,74 +124,6 @@ const Login = () => {
             setbuttonLoader(false);
         }
     };
-
-
-    // ----------------------------for Demo one -------------------------------------
-    // const handleSubmit = async () => {
-    //     if (!validate()) {
-    //         return;
-    //     }
-
-    //     const payload = {
-    //         email: email,
-    //         password: password,
-    //     };
-    //     console.log('Sending log payload to:--------------------', payload);
-
-    //     try {
-    //         setbuttonLoader(true);
-    //         const response = await fetch('http://192.168.1.30:5000/api/user/auth/login', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 "x-frontend-api-key": frontend_api_key
-    //             },
-    //             body: JSON.stringify(payload),
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error('Login failed');
-    //         }
-
-    //         const res = await response.json();
-    //         console.log('✅ Log API response:---------------------------', res);
-
-    //         // const normalizedUserData = {
-    //         //     id: res.data?.user_data?.id,
-    //         //     fullName: res.data?.user_data?.fullName,
-    //         //     email: res.data?.user_data?.email,
-    //         //     phNumber: res.data?.user_data?.phNumber,
-    //         //     address: res.data?.user_data?.address,
-    //         //     imageUrl: res.data?.user_data?.imageUrl,
-    //         //     accountType: res.data?.user_data?.accountType,
-    //         //     position: res.data?.user_data?.position,
-    //         //     businessName: res.data?.user_data?.businessName,
-    //         //     industry: res.data?.user_data?.industry
-    //         // };
-
-    //         // const token = res.data?.token;
-
-    //         // await AsyncStorage.setItem('token', token);
-    //         // await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-
-    //         // dispatch(setUser({
-    //         //     token,
-    //         //     userData: normalizedUserData,
-    //         //     login_status: true,
-    //         //     guest_status: false,
-    //         // }));
-
-    //         // AuthService.setAccount(res.data); // Optional if needed
-    //         // NavigationService.navigate('BottomTab');
-    //         // Toast.show(res?.message);
-    //     } catch (error) {
-    //         console.error("Full Log error:", error);
-    //         Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
-    //     } finally {
-    //         setbuttonLoader(false);
-    //     }
-
-    // };
 
 
     return (
@@ -270,6 +202,7 @@ const Login = () => {
 
                         <TouchableOpacity
                             onPress={() => handleSubmit()}
+                            disabled={buttonLoader}
                             style={{ ...styles.button_sty, backgroundColor: colors.buttonColor }}>
                             {buttonLoader ? (
                                 <ActivityIndicator size="small" color={'#fff'} />

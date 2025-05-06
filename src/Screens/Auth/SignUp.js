@@ -49,6 +49,7 @@ const SignUp = () => {
 
     const [selectAccount, setSelectAccount] = useState('')
     const [selectIndustry, setSelectIndustry] = useState('')
+    const [customIndustryValue, setCustomIndustryValue] = useState('');
     const [isCustomIndustry, setIsCustomIndustry] = useState(false);
     const [businessName, setBusinessName] = useState('')
     const [position, setPosition] = useState('')
@@ -104,10 +105,12 @@ const SignUp = () => {
             if (!selectIndustry || selectIndustry.trim() === "") {
                 errors.selectIndustry = "Industry selection is required";
             }
-
-            if (selectIndustry === "Other" && isCustomIndustry) {
-                errors.selectIndustry = "Specify Industry is required";
+            if (selectIndustry === "Other") {
+                if (!customIndustryValue.trim()) {
+                    errors.selectIndustry = "Specify Industry is required";
+                }
             }
+
         }
         setFormErrors(errors);  // ✅ Always set errors at the end
 
@@ -126,61 +129,11 @@ const SignUp = () => {
             accountType: selectAccount,
             businessName: businessName,
             position: position,
-            industry: selectIndustry,
+            industry: isCustomIndustry ? customIndustryValue.trim() : selectIndustry,
         };
         console.log('Sending register payload to:', payload);
 
-        try {
-            setbuttonLoader(true);
-            const response = await fetch('http://192.168.1.30:5000/api/user/auth/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
 
-            if (!response.ok) {
-                throw new Error('Login failed');
-            }
-
-            const res = await response.json();
-            console.log('✅ Log API response:---------------------------', res);
-
-            const normalizedUserData = {
-                id: res.data?.user_data?.id,
-                fullName: res.data?.user_data?.fullName,
-                email: res.data?.user_data?.email,
-                phNumber: res.data?.user_data?.phNumber,
-                address: res.data?.user_data?.address,
-                imageUrl: res.data?.user_data?.imageUrl,
-                accountType: res.data?.user_data?.accountType,
-                position: res.data?.user_data?.position,
-                businessName: res.data?.user_data?.businessName,
-                industry: res.data?.user_data?.industry
-            };
-
-            const token = res.data?.token;
-
-            await AsyncStorage.setItem('token', token);
-            await AsyncStorage.setItem('userData', JSON.stringify(normalizedUserData));
-
-            dispatch(setUser({
-                token,
-                userData: normalizedUserData,
-                login_status: true,
-                guest_status: false,
-            }));
-
-            AuthService.setAccount(res.data); // Optional if needed
-            NavigationService.navigate('BottomTab');
-            Toast.show(res?.message);
-        } catch (error) {
-            console.error("Full Log error:", error);
-            Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
-        } finally {
-            setbuttonLoader(false);
-        }
 
         try {
             setbuttonLoader(true);
@@ -323,7 +276,11 @@ const SignUp = () => {
                                         }}
                                         onValueChange={(val) => {
                                             setSelectIndustry(val);
-                                            setIsCustomIndustry(val === 'Other');
+                                            const custom = val === 'Other';
+                                            setIsCustomIndustry(custom);
+                                            if (!custom) {
+                                                setCustomIndustryValue('');
+                                            }
                                         }}
                                     />
                                     {formErrors.selectIndustry && (
@@ -336,7 +293,7 @@ const SignUp = () => {
                                         title="Specify Industry"
                                         titleStyle={{ ...styles.title_txt, color: colors.primaryFontColor }}
                                         placeholder="Specify Industry"
-                                        inputStyle={{ ...styles.input_sty, }}
+                                        inputStyle={{ ...styles.input_sty }}
                                         containerStyle={{ ...styles.input_container }}
                                         leftIcon={{
                                             name: 'business-center',
@@ -344,8 +301,8 @@ const SignUp = () => {
                                             color: colors.tintText,
                                             size: 18
                                         }}
-                                        value={selectIndustry === 'Other' ? '' : selectIndustry}
-                                        onChangeText={(val) => setSelectIndustry(val)}
+                                        value={customIndustryValue}
+                                        onChangeText={(val) => setCustomIndustryValue(val)}
                                     />
                                 )}
                                 {/* {formErrors.selectIndustry && (
