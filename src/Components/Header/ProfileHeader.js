@@ -54,7 +54,7 @@ const ProfileHeader = ({ title = '' }) => {
                         <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'center' }]}>Hello</Text>
                     )}
 
-                    <TouchableOpacity
+                    <Pressable
                         onPress={() => {
                             if (!login_status && guest_status) {
                                 navigation.navigate('Login');
@@ -64,7 +64,7 @@ const ProfileHeader = ({ title = '' }) => {
                         }}
                         style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }}>
                         <Icon name={"user"} type={"FontAwesome"} size={26} />
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </View>
             <View style={styles.heading_view}>

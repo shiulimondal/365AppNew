@@ -130,7 +130,7 @@ const BasicPlanCard = ({ setPlanModal, setPaymentModal, setPrice, setPlanName })
                                     style={[styles.button_sty, { backgroundColor: colors.buttonColor }]}
                                 >
                                     <Text style={[styles.button_txt, { color: colors.secondaryThemeColor }]}>
-                                        "Unlock Report  ${item?.price}"
+                                        Unlock Report - ${item?.price}
                                     </Text>
                                 </TouchableOpacity>
                             </Animated.View>

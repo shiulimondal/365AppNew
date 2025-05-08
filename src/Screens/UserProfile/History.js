@@ -28,7 +28,7 @@ const History = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [historyData, setHistoryData] = useState({})
-    // console.log('===============historyData=====================', historyData);
+    console.log('===============historyData=======----------------==============', historyData);
     const [loading, setLoading] = useState(false);
     const [getId, setGetId] = useState('');
     const [getEmail, setGetEmail] = useState('');
@@ -71,8 +71,11 @@ const History = () => {
                     'x-frontend-api-key': frontend_api_key,
                 },
             });
-
+            console.log('📦 Response Status:', res.status);
+            console.log('📦 Response OK:', res.ok);
+            console.log('🔍 ---------------------show history-----------------------result:', res);
             const result = await res.json();
+
             const rawData = result.data || result;
 
             const reduced = rawData.reduce((acc, curr) => {
@@ -163,7 +166,8 @@ const History = () => {
 
                     ) : (
                         <View style={styles.card_view}>
-                            <Text style={{ ...styles.title_txt, color: colors.secondaryFontColor }}>Select the profile, and the invoice will be delivered to the linked email ID</Text>
+                            <Text style={{ ...styles.title_txt, color: colors.secondaryFontColor }}>Resend your background report to the email associated with your account.
+                            </Text>
                             <FlatList
                                 data={historyData}
                                 keyExtractor={(item, index) => item?.searchID?.toString() || index.toString()}
@@ -186,7 +190,7 @@ const History = () => {
                                                 setGetEmail(item?.userEmail)
                                             }}
                                             style={{ ...styles.email_btn, backgroundColor: colors.buttonColor }}>
-                                            <Text style={{ ...styles.buttonText_txt, color: colors.secondaryThemeColor }}>Send Mail</Text>
+                                            <Text style={{ ...styles.buttonText_txt, color: colors.secondaryThemeColor }}>Resend Email</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )}
@@ -308,13 +312,13 @@ const styles = StyleSheet.create({
     },
     email_btn: {
         height: moderateScale(30),
-        width: moderateScale(80),
+        width: moderateScale(90),
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: moderateScale(7)
+        borderRadius: moderateScale(5)
     },
     buttonText_txt: {
-        fontSize: moderateScale(14),
+        fontSize: moderateScale(12),
         fontFamily: FONTS.Inter.medium,
     },
     modalView: {

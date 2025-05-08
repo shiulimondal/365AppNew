@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, Pressable, StatusBar, TouchableOpacity, ImageBackground, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image, Pressable, StatusBar, ImageBackground, useWindowDimensions } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import Icon from '../../Ui/Icon';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -52,7 +52,7 @@ const CommonHeader = ({ title = '' }) => {
                         <Text style={[styles.username_txt, { color: colors.subFontcolor, alignSelf: 'center' }]}>Hello</Text>
                     )}
 
-                    <TouchableOpacity
+                    <Pressable
                         onPress={() => {
                             if (!login_status && guest_status) {
                                 navigation.navigate('Login');
@@ -62,7 +62,7 @@ const CommonHeader = ({ title = '' }) => {
                         }}
                         style={{ ...styles.user_circle, backgroundColor: colors.secondaryThemeColor }}>
                         <Icon name={"user"} type={"FontAwesome"} size={26} />
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </View>
             <View style={styles.heading_view}>

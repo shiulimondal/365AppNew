@@ -17,8 +17,6 @@ const { width, height } = Dimensions.get('window');
 
 const Home = () => {
     const { colors } = useTheme();
-
-
     const viewOffset = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {

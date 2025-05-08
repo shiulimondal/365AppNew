@@ -173,6 +173,8 @@ const styles = StyleSheet.create({
     tabLabel: {
         fontSize: moderateScale(15),
         fontFamily: FONTS.Inter.light,
+        marginTop: moderateScale(-2),
+        textAlign: 'center'
     },
 });
 

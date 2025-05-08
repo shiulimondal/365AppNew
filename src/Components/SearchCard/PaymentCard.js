@@ -72,7 +72,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             setCouponError({ message: '', type: '' });
 
             const url = `${COUPON_URL}/coupons/${coupon.code}`;
-
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -179,7 +178,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             Toast.show(expiryError);
             return false;
         }
-
         // Validate CVV
         if (!cvv.trim()) {
             Toast.show('CVV is required');
@@ -193,26 +191,6 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
     };
 
     const [webViewLoaded, setWebViewLoaded] = useState(false);
-
-    // const handlePayment = () => {
-    //     const isValid = validateInputs();
-    //     if (!isValid) return;
-
-    //     const [expMonth, expYear] = expiry.split('/');
-    //     const cardData = {
-    //         cardNumber,
-    //         expMonth,
-    //         expYear,
-    //         cvv,
-    //     };
-    //     // console.log('===================== masterrrrr  cardData===============', cardData);
-    //     if (webViewLoaded) {
-    //         webViewRef.current?.postMessage(JSON.stringify(cardData));
-    //     } else {
-    //         Toast.show('WebView not ready', 'Please wait for the payment screen to load.');
-    //     }
-
-    // }
 
     const handlePayment = () => {
         const isValid = validateInputs();
@@ -297,6 +275,9 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
         borderRadius: moderateScale(10),
         height: moderateScale(40),
         paddingHorizontal: 10,
+        fontFamily: FONTS.Inter.regular,
+        fontSize: moderateScale(13),
+        colors: colors.secondaryFontColor
     };
 
     return (
@@ -348,6 +329,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Card Holder Name</Text>
                 <TextInput
+                    placeholderTextColor={colors.tintText}
                     ref={cvvRef}
                     value={cardHolder}
                     onChangeText={(val) => setCardHolder(val)}
@@ -358,15 +340,17 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Email Address</Text>
                 <TextInput
                     ref={cvvRef}
+                    placeholderTextColor={colors.tintText}
                     value={emailID}
                     onChangeText={(val) => setEmailID(val)}
-                    style={[styles.fullInput, inputStyle]}
+                    style={[styles.fullInput, inputStyle,]}
                     keyboardType="email-address"
                 />
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Card Number</Text>
                 <TextInput
                     ref={cvvRef}
+                    placeholderTextColor={colors.tintText}
                     value={cardNumber}
                     onChangeText={(val) => setCardNumber(val)}
                     style={[styles.fullInput, inputStyle]}
@@ -381,6 +365,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                         <View style={[styles.expiryInput, inputStyle]}>
 
                             <TextInput
+                                placeholderTextColor={colors.tintText}
                                 value={expiry}
                                 onChangeText={(text) => {
                                     let cleaned = text.replace(/[^\d]/g, '');
@@ -410,6 +395,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                     <View>
                         <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>CVV</Text>
                         <TextInput
+                            placeholderTextColor={colors.tintText}
                             value={cvv}
                             ref={cvvRef}
                             onChangeText={(val) => setCvv(val)}
@@ -454,7 +440,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             <WebView
                 ref={webViewRef}
                 originWhitelist={['*']}
-                source={{ uri: 'https://simpreative.com/365paymentTest/index.html' }}
+                source={{ uri: 'https://simpreative.com/365payment/index.html' }}
                 javaScriptEnabled={true}
                 onLoad={() => {
                     console.log('WebView content loaded');
@@ -523,7 +509,10 @@ const styles = StyleSheet.create({
         fontFamily: FONTS.Inter.medium,
     },
     fullInput: { marginTop: moderateScale(5) },
-    flexInput: { width: moderateScale(180) },
+    flexInput: {
+        width: moderateScale(180),
+        color: '#000'
+    },
     expiryInput: {
         width: moderateScale(120),
         marginTop: moderateScale(5),
