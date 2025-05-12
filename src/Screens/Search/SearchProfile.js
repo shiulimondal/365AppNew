@@ -76,6 +76,9 @@ const SearchProfile = () => {
     const [userdata, setUserData] = useState({})
     const [phoneNumber, setphoneNumber] = useState({})
     const [aliasesData, setAliasesData] = useState({})
+    console.log('================aliasesData====================', aliasesData);
+    console.log();
+    console.log('====================================', aliasesData);
     const [emailData, setEmailData] = useState({})
     const [addressData, setaddressData] = useState({})
     const [criminalRecords, setCriminalRecords] = useState({})
@@ -151,7 +154,7 @@ const SearchProfile = () => {
             setIsLoading(true);
             const res = await HomeService.setFullData(userRealId, payload);
             const persons = res?.data?.persons ?? [];
-            console.log('✅ Incomplete Fulll data ------------------------------------: .', persons);
+            console.log('✅ Incomplete Fulll data ----------------------->>>>>>>>>>>>>>-------------: .', persons);
             setUserData(persons);
             setphoneNumber(persons[0]?.phoneNumbers)
             setAliasesData(persons[0]?.otherObservedNames)
@@ -203,7 +206,7 @@ const SearchProfile = () => {
 
                             <View style={styles.card_view}>
                                 {aliasesData !== undefined && (
-                                    <AliasesCard aliasesData={aliasesData} />
+                                    <AliasesCard aliasesData={aliasesData} openLock={openLock} />
                                 )}
 
                                 {phoneNumber !== undefined && (

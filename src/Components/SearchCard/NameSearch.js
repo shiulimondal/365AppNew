@@ -11,6 +11,9 @@ import { clearPaymentData } from '../../Redux/reducer/paymentSlice';
 const { width, height } = Dimensions.get('window');
 
 const NameSearch = ({ item, index }) => {
+    console.log('===================itemitemitemitem=================', item);
+    console.log();
+    console.log('====================================');
     const { colors } = useTheme();
     const dispatch = useDispatch();
     const { width, height } = useWindowDimensions();
@@ -66,8 +69,9 @@ const NameSearch = ({ item, index }) => {
                     </Text>
                 </View>
                 <View>
-                    <Text style={{ ...styles.user_name, color: colors.primaryFontColor }}>{item.age}yrs</Text>
-                    {/* <Text style={{ ...styles.user_email, color: colors.tintText }}>14.05.1998</Text> */}
+                    {item.age && (
+                        <Text style={{ ...styles.user_name, color: colors.primaryFontColor }}>{item.age}yrs</Text>
+                    )}
                 </View>
             </View>
             <View style={{ ...styles.card_bottom, backgroundColor: colors.secondaryThemeColor, }}>
