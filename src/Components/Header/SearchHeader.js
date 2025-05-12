@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     logo_view: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(24),
+        // paddingTop: moderateScale(24),
         alignItems: 'center',
         marginRight: moderateScale(20),
     },

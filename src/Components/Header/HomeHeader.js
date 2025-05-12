@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: moderateScale(10),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(24),
+        // paddingTop: moderateScale(24),
         alignItems: 'center',
         marginRight: moderateScale(10),
         marginHorizontal: 0

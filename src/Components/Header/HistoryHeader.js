@@ -80,12 +80,11 @@ const HistoryHeader = ({ title = '' }) => {
 export default HistoryHeader;
 // define your styles
 const styles = StyleSheet.create({
-
     logo_view: {
         paddingLeft: moderateScale(5),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(24),
+        // paddingTop: moderateScale(24),
         alignItems: 'center',
         marginRight: moderateScale(10),
         marginHorizontal: 0

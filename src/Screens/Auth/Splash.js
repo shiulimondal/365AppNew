@@ -47,16 +47,24 @@ const Splash = () => {
                 <LinearGradient
                     style={styles.back_main}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 0 }}
-                    colors={['rgba(10, 104, 201, 0.9)', 'rgba(15, 107, 202, 0.7)']}>
+                    end={{ x: 0, y: 1 }}
+                    colors={[
+                        'rgba(10, 104, 201, 1)',
+                        'rgba(10, 104, 201, 0.7)',
+                        'rgba(10, 104, 201, 0.4)',
+                    ]}
+                    locations={[0, 0.13, 1]} // 0–15% first color, rest transitions
+                >
                     <Animated.View
-                        style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}>
+                        style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}
+                    >
                         <Image
                             source={require('../../assets/images/logo.png')}
                             style={styles.splash_img}
                         />
                     </Animated.View>
                 </LinearGradient>
+
             </ImageBackground>
         </View>
     );

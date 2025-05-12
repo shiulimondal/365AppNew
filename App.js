@@ -1,10 +1,10 @@
 import 'react-native-gesture-handler';
 import 'react-native-get-random-values';
 import React, { useRef, useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { Platform, StatusBar, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import NavigationService from './src/Services/Navigation';
 import AuthStack from './src/Navigations/AuthStack';
@@ -19,9 +19,6 @@ const Stack = createStackNavigator();
 const App = () => {
     const dispatch = useDispatch();
     const { login_status, guest_status } = useSelector((state) => state.User || {});
-
-    console.log('=========app.js=========guest_status==================', guest_status);
-    console.log('==========app.js==========login_status================', login_status);
 
     useEffect(() => {
         console.log('Checking user status on app launch...');
@@ -53,24 +50,42 @@ const ThemeContent = ({ login_status, guest_status }) => {
     const navigatorRef = useRef(null);
 
     return (
-        <NavigationContainer
-            ref={(ref) => {
-                navigatorRef.current = ref;
-                NavigationService.setTopLevelNavigator(ref);
-            }}
-        >
-            <View style={{ flex: 1, backgroundColor: '#ffffff' }}>
-                <Stack.Navigator screenOptions={{ headerShown: false }}>
-                    {login_status || guest_status ? (
-                        // Guest or logged-in user, so show the UserStack
-                        <Stack.Screen name="UserStack" component={UserStack} />
-                    ) : (
-                        // If neither guest nor logged in, show AuthStack (login/signup)
-                        <Stack.Screen name="AuthStack" component={AuthStack} />
-                    )}
-                </Stack.Navigator>
-            </View>
-        </NavigationContainer>
+        <>
+            {/* StatusBar used after splash */}
+            <StatusBar
+                backgroundColor={'rgba(10, 104, 201, 0.1)'}
+                barStyle="light-content"
+                translucent
+            />
+
+            <NavigationContainer
+                ref={(ref) => {
+                    navigatorRef.current = ref;
+                    NavigationService.setTopLevelNavigator(ref);
+                }}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'rgba(10, 104, 201, 1)',
+                        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                    }}
+                >
+                    <SafeAreaView
+                        style={{ flex: 1, backgroundColor: '#ffffff' }}
+                        edges={['left', 'right', 'bottom']}
+                    >
+                        <Stack.Navigator screenOptions={{ headerShown: false }}>
+                            {login_status || guest_status ? (
+                                <Stack.Screen name="UserStack" component={UserStack} />
+                            ) : (
+                                <Stack.Screen name="AuthStack" component={AuthStack} />
+                            )}
+                        </Stack.Navigator>
+                    </SafeAreaView>
+                </View>
+            </NavigationContainer>
+        </>
     );
 };
 ;

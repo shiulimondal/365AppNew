@@ -17,7 +17,7 @@ const BackHeader = ({ icon = true }) => {
     return (
         <ImageBackground source={require('../../assets/images/headerBG.png')}
             resizeMode="cover"
-            style={{ height: moderateScale(260), width: width }}>
+            style={{ height: moderateScale(240), width: width }}>
             <StatusBar backgroundColor={'rgba(10, 104, 201, 0.1)'} barStyle="light-content" translucent />
             {icon && (
                 <TouchableOpacity

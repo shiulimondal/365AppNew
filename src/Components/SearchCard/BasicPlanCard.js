@@ -33,13 +33,11 @@ const BasicPlanCard = ({ setPlanModal, setPaymentModal, setPrice, setPlanName })
         setPlanName(name);
     };
 
-
-
     return (
         <View style={styles.container}>
             <Text style={[styles.title_txt, { color: colors.secondaryThemeColor }]}>Choose Report</Text>
 
-            <View style={{ height: height / 1.27 }}>
+            <View style={{ height: height / 1.33 }}>
                 <CustomCarousel
                     data={planData}
                     scrollX={scrollX}

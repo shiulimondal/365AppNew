@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         paddingLeft: moderateScale(7),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: moderateScale(24),
+        // paddingTop: moderateScale(24),
         alignItems: 'center',
         marginHorizontal: 0,
     },
