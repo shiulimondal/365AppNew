@@ -130,7 +130,7 @@ const SearchHeader = ({ userdata }) => {
                         </Text>
                     </View>
                 </View>
-                <View>
+                <View style={{ right: moderateScale(10) }}>
                     {userdata && userdata[0]?.age && (
                         <Text style={[styles.heading_txt, { color: colors.subFontcolor }]}>
                             {userdata[0]?.age} Years

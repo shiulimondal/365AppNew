@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     Modal,
     ActivityIndicator,
+    Linking,
 } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -123,6 +124,25 @@ const UserProfile = () => {
                                         <Icon name={"right"} type={"AntDesign"} size={18} />
                                     </TouchableOpacity>
 
+                                    <TouchableOpacity
+                                        onPress={() => Linking.openURL('https://365instantcheck.com/company#terms')}
+                                        style={{ ...styles.hide_view, backgroundColor: colors.subFontcolor }}>
+                                        <View style={styles.lockview}>
+                                            <Image source={require('../../assets/images/Terms.png')} style={styles.profile_img_sty} />
+                                            <Text style={{ ...styles.phone_number, color: colors.primaryFontColor }}>Terms & Conditions</Text>
+                                        </View>
+                                        <Icon name={"right"} type={"AntDesign"} size={18} />
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        onPress={() => Linking.openURL('https://365instantcheck.com/company#privacypolicy')}
+                                        style={{ ...styles.hide_view, backgroundColor: colors.subFontcolor }}>
+                                        <View style={styles.lockview}>
+                                            <Image source={require('../../assets/images/privacy.png')} style={styles.profile_img_sty} />
+                                            <Text style={{ ...styles.phone_number, color: colors.primaryFontColor }}>Privacy Policy</Text>
+                                        </View>
+                                        <Icon name={"right"} type={"AntDesign"} size={18} />
+                                    </TouchableOpacity>
 
                                     <TouchableOpacity
                                         onPress={() => setOpenModal(true)}

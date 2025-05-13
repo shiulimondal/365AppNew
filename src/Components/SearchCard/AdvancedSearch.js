@@ -39,8 +39,6 @@ const AdvancedSearch = () => {
     const handleAdvSearch = async (page = 1) => {
 
         let validationErrors = {};
-
-        // Ensure `firstName` and `lastName` are not undefined
         const trimmedFirstName = firstName?.trim() || "";
         const trimmedLastName = lastName?.trim() || "";
 
@@ -88,14 +86,17 @@ const AdvancedSearch = () => {
         // Destructure to assign the first, middle, and last names
         const [first, middle = null, last = ""] = nameParts;
         const finalData = {
-            firstName: first.trim(),
+            firstName: first?.trim() || null,
             middleName: middle?.trim() || null,
-            lastName: last.trim(),
+            lastName: last?.trim() || null,
             phone: trimmedAdvPhone || null,
             email: trimmedAdvEmail || null,
             Addresses: [{
-                AddressLine1: null, // or selectedAddress?.main_text || null
-                AddressLine2: city || selecteState ? `${selecteState}` : null
+                AddressLine1: null,
+                AddressLine2: city && selecteState ? `${city}, ${selecteState}` :
+                    city ? city :
+                        selecteState ? selecteState :
+                            null,
             }],
             AgeRange: selectedAge || null,
             Relatives: relativeName ? [{
@@ -103,6 +104,7 @@ const AdvancedSearch = () => {
                 lastName: relativeName.split(" ")[1] || ""
             }] : []
         };
+
 
         console.log('------------------finalData addddddd---------------', finalData);
 
@@ -113,12 +115,12 @@ const AdvancedSearch = () => {
             const persons = res?.data?.persons ?? [];
             setSearchResult(persons);
             setListMessage(res?.data?.summary)
-
-
+            if (persons.length === 0) {
+                Toast.show("Oops! No person found with those search criteria");
+            }
             setTotalPages(res?.data?.pagination?.totalPages || 1);
         } catch (error) {
             console.error("Search error:", error);
-            Toast.show("Oops! Something went wrong. Please try again.");
         } finally {
             setLoading(false);
         }

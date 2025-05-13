@@ -22,6 +22,7 @@ import CommonHeader from '../../Components/Header/CommonHeader';
 import HomeService from '../../Services/HomeServises';
 import Toast from 'react-native-simple-toast';
 import GooglePlacesAutocomplete from '../../Ui/GooglePlacesAutocomplete';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Search = () => {
@@ -56,6 +57,22 @@ const Search = () => {
         inputRange: [0, 1],
         outputRange: [0, 1],
     });
+
+    useFocusEffect(
+        useCallback(() => {
+            setSearchResult([]);
+            setCurrentPage(1);
+            setTotalPages(1);
+            setNoData(false);
+            setListMessage(null);
+            setSelectedAddress('');
+            setFormErrors({});
+            setDataCache({});
+            setSearchAllData({ text: '', type: 'Name' });
+            setSelectedTab('Name');
+        }, [])
+    );
+
 
     const splitFullName = (fullName) => {
         const parts = fullName.trim().split(/\s+/);
@@ -160,9 +177,38 @@ const Search = () => {
         </View>
     );
 
+    // useEffect(() => {
+    //     handleSearch({}, 1);
+    // }, []);
+
     useEffect(() => {
-        handleSearch({}, 1);
+        const { text, type } = searchAllData;
+
+        const isValidSearch = () => {
+            if (!text || !type) return false;
+
+            switch (type) {
+                case "Name": {
+                    const { firstName, lastName } = splitFullName(text);
+                    return validateName(firstName, lastName);
+                }
+                case "Phone":
+                    return validatePhone(text);
+                case "Email":
+                    return validateEmail(text);
+                case "Address":
+                    return validateAddress(selectedAddress);
+                default:
+                    return false;
+            }
+        };
+
+        if (isValidSearch()) {
+            handleSearch({}, 1);
+        }
     }, []);
+
+
     const [dataCache, setDataCache] = useState({})
     const [loading, setLoading] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
@@ -172,6 +218,7 @@ const Search = () => {
     const [listMessage, setListMessage] = useState('');
     const [selectedAddress, setSelectedAddress] = useState('');
     const [formErrors, setFormErrors] = useState({});
+    const [noData, setNoData] = useState(false);
 
     const handlePlaceSelect = (data, details = null) => {
         const main = data?.structured_formatting?.main_text || '';
@@ -271,11 +318,12 @@ const Search = () => {
                     [page]: persons,
                 }
             }));
+            setNoData(false)
 
             setTotalPages(res?.data?.pagination?.totalPages || 1);
         } catch (error) {
-            console.error("Search error:", error);
-            // Toast.show("Oops! Something went wrong. Please try again.");
+            console.error("Search error:----------------", error);
+            setNoData(true)
         } finally {
             setLoading(false);
         }
@@ -329,10 +377,12 @@ const Search = () => {
 
         const flatList = (Component) => (
             <>
-                {(!searchResult.length && !dataCache[selectedTab]?.[currentPage]) ? (
-                    <View style={styles.message_view}    >
+                {!loading && !searchResult.length && !dataCache[selectedTab]?.[currentPage] ? (
+                    <View style={styles.message_view}>
                         <Text style={{ ...styles.message_txt, color: colors.primaryFontColor }}>
-                            Background reports made simple — Start searching today.
+                            {noData
+                                ? 'No data found.'
+                                : 'Background reports made simple — Start searching today.'}
                         </Text>
                     </View>
                 ) : (
@@ -352,6 +402,7 @@ const Search = () => {
                 )}
             </>
         );
+
 
         switch (selectedTab) {
             case 'Name':
@@ -426,7 +477,6 @@ const Search = () => {
 
 export default Search;
 
-
 // define your styles
 const styles = StyleSheet.create({
     Container: {
@@ -496,7 +546,8 @@ const styles = StyleSheet.create({
         marginTop: moderateScale(50),
         fontFamily: FONTS.Inter.semibold,
         fontSize: moderateScale(14),
-        textAlign: 'center'
+        textAlign: 'center',
+        marginHorizontal: moderateScale(10)
     },
     prev_btn: {
         paddingVertical: moderateScale(8),

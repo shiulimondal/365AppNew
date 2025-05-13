@@ -68,10 +68,19 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
     const handleCouponApply = async () => {
         try {
+            const code = coupon.code.trim();
+
+            if (!code) {
+                setCouponError({ message: 'Please enter a valid coupon code.', type: 'error' });
+                setCouponApplied(false);
+                setDiscountedAmount(null);
+                return;
+            }
+
             setCouponLoading(true);
             setCouponError({ message: '', type: '' });
 
-            const url = `${COUPON_URL}/coupons/${coupon.code}`;
+            const url = `${COUPON_URL}/coupons/${code}`;
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -91,8 +100,13 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 throw new Error('Invalid JSON response from server');
             }
 
-            if (data?.success) {
+            if (data?.success && data.data) {
                 const { discountType, discountValue, expiryDate } = data.data;
+
+                if (!discountType || discountValue == null || !expiryDate) {
+                    throw new Error('Invalid coupon data received.');
+                }
+
                 const now = new Date();
                 if (now >= new Date(expiryDate)) {
                     setCoupon({ code: '' });
@@ -104,16 +118,17 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
                 let finalAmount = parseFloat(price);
                 if (discountType.toLowerCase() === 'percentage') {
-                    finalAmount = finalAmount - (finalAmount * discountValue) / 100;
+                    finalAmount -= (finalAmount * discountValue) / 100;
                 } else if (discountType.toLowerCase() === 'fixed') {
-                    finalAmount = finalAmount - discountValue;
+                    finalAmount -= discountValue;
                 }
+
                 setDiscountedAmount(finalAmount.toFixed(2));
                 setCouponApplied(true);
-
                 setCouponError({ message: 'Coupon applied successfully!', type: 'success' });
+
             } else {
-                throw new Error(data?.message || 'Invalid coupon');
+                throw new Error(data?.message || 'Invalid or expired coupon.');
             }
         } catch (error) {
             setCoupon({ code: '' });
@@ -124,6 +139,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
             setCouponLoading(false);
         }
     };
+
 
     const validateEmail = (email) => {
         const emailRegex = /\S+@\S+\.\S+/;
@@ -154,7 +170,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
     const validateInputs = () => {
         if (!cardHolder.trim()) {
-            Toast.show('Cardholder name is required');
+            Toast.show('Card holder name is required');
             return false;
         }
         if (!emailID.trim()) {
@@ -297,6 +313,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                 <View style={styles.row}>
                     <TextInput
                         ref={cvvRef}
+                        editable={!loading}
                         placeholder="Enter a coupon code"
                         placeholderTextColor={colors.tintText}
                         value={coupon}
@@ -329,6 +346,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Card Holder Name</Text>
                 <TextInput
+                    editable={!loading}
                     placeholderTextColor={colors.tintText}
                     ref={cvvRef}
                     value={cardHolder}
@@ -339,6 +357,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Email Address</Text>
                 <TextInput
+                    editable={!loading}
                     ref={cvvRef}
                     placeholderTextColor={colors.tintText}
                     value={emailID}
@@ -349,6 +368,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
 
                 <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>Card Number</Text>
                 <TextInput
+                    editable={!loading}
                     ref={cvvRef}
                     placeholderTextColor={colors.tintText}
                     value={cardNumber}
@@ -365,6 +385,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                         <View style={[styles.expiryInput, inputStyle]}>
 
                             <TextInput
+                                editable={!loading}
                                 placeholderTextColor={colors.tintText}
                                 value={expiry}
                                 onChangeText={(text) => {
@@ -395,6 +416,7 @@ const PaymentCard = ({ price, setPaymentModal, planName }) => {
                     <View>
                         <Text style={[styles.inputLabel, { color: colors.primaryFontColor }]}>CVV</Text>
                         <TextInput
+                            editable={!loading}
                             placeholderTextColor={colors.tintText}
                             value={cvv}
                             ref={cvvRef}

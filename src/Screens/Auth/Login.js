@@ -8,6 +8,7 @@ import {
     Animated,
     TouchableOpacity,
     ActivityIndicator,
+    Linking,
 } from 'react-native';
 import { useTheme } from '../../../ThemeContext';
 import { moderateScale } from '../../Constants/PixelRatio';
@@ -215,6 +216,25 @@ const Login = () => {
                             onPress={() => NavigationService.navigate('SignUp')}
                             style={{ ...styles.sub_title, color: colors.tintText }}>Don't have an account?
                             <Text style={{ color: colors.buttonColor }}>{" "}Create one</Text> </Text>
+
+
+
+                        <Text style={{ ...styles.bottom_title, color: colors.tintText }}>
+                            <Text
+                                style={{ color: colors.buttonColor }}
+                                onPress={() => Linking.openURL('https://365instantcheck.com/company#terms')}>
+                                Terms & Conditions
+                            </Text>{" "}
+                            and{" "}
+                            <Text
+                                style={{ color: colors.buttonColor }}
+                                onPress={() => Linking.openURL('https://365instantcheck.com/company#privacypolicy')}>
+                                Privacy Policy
+                            </Text>
+                        </Text>
+
+
+
                     </View>
 
                 </Animated.View>
@@ -286,6 +306,12 @@ const styles = StyleSheet.create({
         fontSize: moderateScale(13),
         fontFamily: FONTS.Inter.medium,
         textAlign: 'center'
+    },
+    bottom_title: {
+        fontSize: moderateScale(13),
+        fontFamily: FONTS.Inter.medium,
+        textAlign: 'center',
+        marginTop: moderateScale(10),
     },
     forget_password: {
         fontFamily: FONTS.Inter.regular,

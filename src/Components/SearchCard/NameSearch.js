@@ -12,8 +12,6 @@ const { width, height } = Dimensions.get('window');
 
 const NameSearch = ({ item, index }) => {
     console.log('===================itemitemitemitem=================', item);
-    console.log();
-    console.log('====================================');
     const { colors } = useTheme();
     const dispatch = useDispatch();
     const { width, height } = useWindowDimensions();
