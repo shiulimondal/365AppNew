@@ -119,8 +119,12 @@ const Login = () => {
             NavigationService.navigate('BottomTab');
             Toast.show(res?.message);
         } catch (error) {
-            console.error("Full Log error:", error);
-            Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
+            console.log("Full Log error:", error);
+            if (error?.message?.includes('JSON Parse error')) {
+                Toast.show("We couldn’t find your account. Create one to continue.");
+            } else {
+                Toast.show(error?.message || 'Oops! Something went wrong. Please try again.');
+            }
         } finally {
             setbuttonLoader(false);
         }

@@ -153,7 +153,6 @@ const UserProfile = () => {
                                         </View>
                                         <Icon name={"right"} type={"AntDesign"} size={18} />
                                     </TouchableOpacity>
-
                                 </>
                         }
                     </View>
